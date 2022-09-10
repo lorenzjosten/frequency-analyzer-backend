@@ -1,0 +1,31 @@
+[versions]
+frontend = "1.0"
+spring-boot = "2.7.3"
+spring-dependency = "1.0.13.RELEASE"
+kotlin = "1.7.10"
+
+[libraries]
+frontend = { group = "io.github", name = "frontend", version.ref = "frontend" }
+spring-boot = { group = "org.springframework.boot", name = "spring-boot-starter-data-r2dbc" }
+spring-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
+spring-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+reactor-test = { group = "io.projectreactor", name = "reactor-test" }
+kotlin-std-lib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
+kotlin-reactor-ext = { group = "io.projectreactor.kotlin", name = "reactor-kotlin-extensions" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
+kotlin-jackson = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
+h2-db = { group = "com.h2database", name = "h2" }
+h2-rdbc = { group = "io.r2dbc", name = "r2dbc-h2" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency = { id = "io.spring.dependency-management", version.ref = "spring-dependency" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+[bundles]
+spring = [ "spring-boot", "spring-webflux" ]
+kotlin = [ "kotlin-std-lib", "kotlin-reflect", "kotlin-reactor-ext", "kotlin-coroutines", "kotlin-jackson" ]
+test = [ "spring-test", "reactor-test" ]
+h2 = [ "h2-db", "h2-rdbc" ]
