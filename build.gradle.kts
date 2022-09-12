@@ -26,7 +26,7 @@ dependencies {
 
 val inComposite = gradle.parent != null
 
-if(inComposite) apply(from = "composite.build.gradle.kts")
+if(inComposite) apply("composite.build.gradle.kts")
 
 tasks.withType(KotlinCompile::class) {
     kotlinOptions {
