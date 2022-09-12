@@ -2,7 +2,7 @@
 
 logging:
   level.root: ERROR
-  file.name: ../log/prod-error.log
+  file.name: ../log/error.log
 
 server:
   port: 8080
