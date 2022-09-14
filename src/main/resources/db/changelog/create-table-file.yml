@@ -1,0 +1,23 @@
+---
+
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: lorenzjosten
+      changes:
+        - createTable:
+            tableName: file
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: file_pkey
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: data
+                  type: varbinary
