@@ -20,13 +20,15 @@ repositories {
 dependencies {
     implementation(libs.bundles.spring)
     implementation(libs.bundles.kotlin)
+    implementation(libs.liquibase)
     runtimeOnly(libs.bundles.h2)
+    runtimeOnly(libs.spring.jdbc)
     testImplementation(libs.bundles.test)
 }
 
 val inComposite = gradle.parent != null
 
-if(inComposite) apply("composite.build.gradle.kts")
+if (inComposite) apply("composite.build.gradle.kts")
 
 tasks.withType(KotlinCompile::class) {
     kotlinOptions {
