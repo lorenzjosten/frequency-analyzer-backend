@@ -68,6 +68,24 @@ class FileControllerTest(
     }
 
     @Test
+    fun shouldThrowIfNoMp3File() {
+        fileRepository.save(any())
+            .thenReturn(Mono.just(TEST_FILE))
+
+        client
+            .post()
+            .uri("/file")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(fileBodyInserter())
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectAll(
+                { it.expectBody(FileErrorDto::class.java) },
+                { it.expectStatus().is4xxClientError }
+            )
+    }
+
+    @Test
     fun shouldReturnOldFileDto() {
         val id = 1L
 
