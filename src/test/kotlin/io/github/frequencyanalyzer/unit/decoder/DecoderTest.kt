@@ -14,4 +14,16 @@ class DecoderTest {
         mp3Decoder = Mp3DecoderImpl(TEST_FILE_RESOURCE.inputStream)
     }
 
+    fun shouldDecodeMp3File() {
+
+    }
+
+    fun shouldBeAbleToDecodeMp3File() {
+
+    }
+
+    fun shouldNotBeAbleToDecodeNonMp3File() {
+
+    }
+
 }
