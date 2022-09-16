@@ -14,7 +14,7 @@ import java.nio.file.Path
 
 sealed class FileTestUtils {
     companion object {
-        val TEST_FILE_RESOURCE: Resource = ClassPathResource("testfile")
+        val TEST_FILE_RESOURCE: Resource = ClassPathResource("440Hz-5sec.mp3")
         val TEST_FILE_PART: FilePart = createFilePart()
         val TEST_FILE: File = createFile()
 
