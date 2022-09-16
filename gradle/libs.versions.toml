@@ -5,6 +5,7 @@ spring-dependency = "1.0.13.RELEASE"
 kotlin = "1.7.10"
 liquibase = "4.16.0"
 kotlin-mockito =  "4.0.0"
+kotlin-lint = "11.0.0"
 
 [libraries]
 frontend = { group = "io.github", name = "frontend", version.ref = "frontend" }
@@ -29,6 +30,7 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency = { id = "io.spring.dependency-management", version.ref = "spring-dependency" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-lint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-lint" }
 
 [bundles]
 spring = [ "spring-r2dbc", "spring-webflux", "spring-validation" ]

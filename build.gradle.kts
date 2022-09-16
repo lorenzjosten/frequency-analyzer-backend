@@ -3,10 +3,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 defaultTasks(":bootRun")
 
 plugins {
+    jacoco
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.lint)
 }
 
 group = "io.github"
@@ -39,5 +41,17 @@ tasks.withType(KotlinCompile::class) {
 
 tasks.withType(Test::class) {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
 
+tasks.jacocoTestReport
+
+tasks.withType(JacocoReport::class) {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacoco"))
+    }
+}
