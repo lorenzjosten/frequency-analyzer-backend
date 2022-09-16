@@ -3,25 +3,16 @@ package io.github.frequencyanalyzer.file.model
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.stereotype.Component
-import java.util.function.Function
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 @Table("file")
 data class File(
-
-    @Id
-    val id: Long? = null,
-    @NotNull
-    @NotBlank
-    val name: String,
-    @NotNull
-    @NotEmpty
-    val data: ByteArray
+    @Id val id: Long? = null,
+    @NotBlank val name: String,
+    @NotEmpty val data: ByteArray
 ) {
-
-    fun hasId() = id != null
+    fun hasId(): Boolean = id != null
 }
 
 data class FileDto(
@@ -30,4 +21,4 @@ data class FileDto(
 )
 
 @Component
-class FileMapper : Function<File, FileDto> by Function({ f -> FileDto(f.id, f.name) })
+class FileMapper : (File) -> FileDto by { FileDto(it.id, it.name) }
