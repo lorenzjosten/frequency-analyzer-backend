@@ -44,8 +44,6 @@ tasks.withType(Test::class) {
     finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.jacocoTestReport
-
 tasks.withType(JacocoReport::class) {
     dependsOn(tasks.test)
 

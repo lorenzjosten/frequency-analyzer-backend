@@ -18,9 +18,9 @@ sealed class FileTestUtils {
         val TEST_FILE_PART: FilePart = createFilePart()
         val TEST_FILE: File = createFile()
 
-       private fun createFile(): File {
-           return TEST_FILE_RESOURCE.file.run { File(name = name, data = readBytes()) }
-       }
+        private fun createFile(): File {
+            return TEST_FILE_RESOURCE.file.run { File(name = name, data = readBytes()) }
+        }
 
         private fun createFilePart(): FilePart {
             return object : FilePart {
