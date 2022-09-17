@@ -1,19 +1,14 @@
 package io.github.frequencyanalyzer.decoder
 
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
-import java.io.InputStream
 
-class Mp3DecoderImpl(inputStream: InputStream) : Mp3Decoder(inputStream) {
+class Mp3DecoderImpl(byteArray: ByteArray) : Mp3Decoder(byteArray) {
 
-    override fun canDecode(): Boolean {
+    override fun readFrames(n: UInt): List<DecodedFrame> {
         TODO("Not yet implemented")
     }
 
-    override fun decodeFrames(n: Int): List<DecodedFrame> {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeFrame(): DecodedFrame {
+    override fun readFrame(): DecodedFrame? {
         TODO("Not yet implemented")
     }
 }

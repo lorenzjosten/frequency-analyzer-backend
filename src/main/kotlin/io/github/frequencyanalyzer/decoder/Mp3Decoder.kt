@@ -1,13 +1,15 @@
 package io.github.frequencyanalyzer.decoder
 
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
-import java.io.InputStream
+import javazoom.jl.decoder.Bitstream
 
-abstract class Mp3Decoder(protected val inputStream: InputStream) {
+abstract class Mp3Decoder(byteArray: ByteArray) : AutoCloseable {
 
-    abstract fun canDecode(): Boolean
+    private val bitStream = Bitstream(byteArray.inputStream())
 
-    abstract fun decodeFrames(n: Int): List<DecodedFrame>
+    abstract fun readFrames(n: UInt): List<DecodedFrame>
 
-    abstract fun decodeFrame(): DecodedFrame
+    abstract fun readFrame(): DecodedFrame?
+
+    override fun close() = bitStream.close()
 }
