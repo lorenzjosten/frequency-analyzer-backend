@@ -11,7 +11,7 @@ class SpectralAnalysisTest {
 
     private val decodedFrames: List<DecodedFrame> = decodeTestFile()
 
-    private val failThreshold: Double = 0.99
+    private val failThreshold: Double = 0.98
 
     private val expectedFreq: Double = 440.0
 
@@ -19,19 +19,18 @@ class SpectralAnalysisTest {
 
     @Test
     fun frequencyPeaksOfAnalyzedFramesShouldBeAsExpected() {
-        val freqPeakAt = decodedFrames
+        val peakFrequencies = decodedFrames
             .map { SpectralAnalysis(it) }
             .map { it.powerSpectrum() }
             .map { it.peakFrequency() }
-
-        val total = freqPeakAt.size
         val acceptable = (expectedFreq - toleranceFreq / 2 .. expectedFreq + toleranceFreq / 2)
-        val accepted = freqPeakAt.count { it in acceptable }
+        val accepted = peakFrequencies.count { it in acceptable }
 
-        assertTrue(failThreshold < accepted / total)
+        assertTrue(failThreshold < accepted.toDouble() / peakFrequencies.size)
     }
 
     private fun decodeTestFile(): List<DecodedFrame> {
-        return generateSequence { Mp3DecoderImpl(TEST_FILE.data).readFrame() }.toList()
+        return Mp3DecoderImpl(TEST_FILE.data)
+            .use { generateSequence { it.readFrame() }.toList() }
     }
 }
