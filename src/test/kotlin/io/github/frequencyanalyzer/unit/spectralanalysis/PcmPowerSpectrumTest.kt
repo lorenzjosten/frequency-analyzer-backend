@@ -12,29 +12,26 @@ class PcmPowerSpectrumTest {
     @Test
     fun shouldAccumulate() {
         val other = PcmPowerSpectrum(fourierCoefficients())
+        val expected = listOf(0 to 0.0, 1 to 2.0, 2 to 4.0, 3 to 6.0)
         val accumulated = powerSpectrum.accumulate(other)
-        val expected = List(powerSpectrum.size) { i -> powerSpectrum[i]!! + other[i]!! }
 
-        accumulated.values.forEachIndexed { i, magnitude -> assertEquals(expected[i], magnitude) }
+        accumulated.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
 
     @Test
     fun shouldScaleCoefficients() {
-        val sampleRate = 2
-        val sampleSize = 4
-        val scalingFactor = sampleRate.toDouble() / sampleSize
-        val scaled = powerSpectrum.scaleCoefficients(sampleRate, sampleSize)
-        val expected = powerSpectrum.keys.map { it * scalingFactor }
+        val expected = listOf(0 to 0.0, 1 to 3.0, 2 to 3.0)
+        val scaled = powerSpectrum.scaleCoefficients(2, 4)
 
-        scaled.keys.forEachIndexed { i, coefficient -> assertEquals(expected[i], coefficient) }
+        scaled.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
 
     @Test
     fun shouldLogScaleMagnitude() {
+        val expected = powerSpectrum.mapValues { PcmPowerSpectrum.DECIBEL_FACTOR * log10(it.value) }.toList()
         val scaled = powerSpectrum.logScaleMagnitude()
-        val expected = powerSpectrum.values.map { PcmPowerSpectrum.DECIBEL_FACTOR * log10(it) }
 
-        scaled.values.forEachIndexed { i, magnitude -> assertEquals(expected[i], magnitude) }
+        scaled.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
 
     private fun fourierCoefficients(): MutableMap<Int, Double> {
