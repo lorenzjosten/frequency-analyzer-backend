@@ -7,6 +7,7 @@ liquibase = "4.16.0"
 kotlin-mockito =  "4.0.0"
 kotlin-lint = "11.0.0"
 jlayer = "1.0.1"
+jtransforms = "2.4.0"
 
 [libraries]
 frontend = { group = "io.github", name = "frontend", version.ref = "frontend" }
@@ -26,6 +27,7 @@ h2-db = { group = "com.h2database", name = "h2" }
 h2-rdbc = { group = "io.r2dbc", name = "r2dbc-h2" }
 liquibase = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibase" }
 jlayer = { group = "javazoom", name = "jlayer", version.ref = "jlayer" }
+jtransforms = { group = "net.sourceforge.jtransforms", name = "jtransforms", version.ref = "jtransforms" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
@@ -37,6 +39,6 @@ kotlin-lint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-lint
 [bundles]
 spring = [ "spring-r2dbc", "spring-webflux", "spring-validation" ]
 kotlin = [ "kotlin-std-lib", "kotlin-reflect", "kotlin-reactor-ext", "kotlin-coroutines", "kotlin-jackson" ]
-analyzation = [ "jlayer" ]
+analyzation = [ "jlayer", "jtransforms" ]
 test = [ "spring-test", "reactor-test", "kotlin-mockito" ]
 h2 = [ "h2-db", "h2-rdbc" ]
