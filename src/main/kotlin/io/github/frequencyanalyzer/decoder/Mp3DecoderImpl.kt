@@ -20,10 +20,11 @@ class Mp3DecoderImpl(byteArray: ByteArray) : Mp3Decoder(byteArray) {
     }
 
     private fun decodeFrame(currentHeader: Header): DecodedFrame {
+        val duration = currentHeader.ms_per_frame()
         val decodedBuffer = decodeFrame(currentHeader, bitStream) as SampleBuffer
 
         bitStream.closeFrame()
 
-        return decodedBuffer.let(FrameMapper())
+        return decodedBuffer.let(FrameMapper(duration))
     }
 }

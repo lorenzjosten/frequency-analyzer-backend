@@ -4,17 +4,17 @@ import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_RESOURCE
 import io.github.frequencyanalyzer.decoder.Mp3Decoder
 import io.github.frequencyanalyzer.decoder.Mp3DecoderImpl
-import io.github.frequencyanalyzer.decoder.extension.adjustedBuffer
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 import io.github.frequencyanalyzer.decoder.model.FrameMapper
 import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Decoder
 import javazoom.jl.decoder.SampleBuffer
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import java.io.File
 
 class DecoderTest {
@@ -77,21 +77,14 @@ class DecoderTest {
         assertNull(mp3Decoder.readFrame())
     }
 
-    private fun assertFramesMatch(buffer: SampleBuffer, decodedFrame: DecodedFrame?) {
-        assertAll(
-            { assertEquals(buffer.bufferLength, decodedFrame?.bufferSize) },
-            { assertEquals(buffer.sampleFrequency, decodedFrame?.sampleFrequency) },
-            { assertTrue(buffer.adjustedBuffer().contentEquals(decodedFrame?.buffer)) }
-        )
-    }
-
     private class TestDecoder : Decoder(), AutoCloseable {
 
         private val bitStream = Bitstream(TEST_FILE_RESOURCE.inputStream)
 
         fun readFrame(): DecodedFrame? {
-            var buffer: SampleBuffer? = null
             val header = bitStream.readFrame()
+            val duration = header.ms_per_frame()
+            var buffer: SampleBuffer? = null
 
             if (header != null) {
                 buffer = decodeFrame(header, bitStream) as SampleBuffer
@@ -100,7 +93,7 @@ class DecoderTest {
                 close()
             }
 
-            return buffer?.let(FrameMapper())
+            return buffer?.let(FrameMapper(duration))
         }
 
         override fun close() {
