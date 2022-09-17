@@ -1,5 +1,6 @@
 package io.github.frequencyanalyzer.spectralanalysis.model
 
+import kotlin.math.abs
 import kotlin.math.log10
 
 private typealias Order = Double
@@ -35,7 +36,7 @@ class PcmPowerSpectrum(
         val scaled = mapValues {
             when (it.value) {
                 0.0 -> 0.0
-                else -> DECIBEL_FACTOR * log10(it.value)
+                else -> DECIBEL_FACTOR * log10(abs(it.value))
             }
         }
 
