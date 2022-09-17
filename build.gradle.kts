@@ -22,6 +22,7 @@ repositories {
 dependencies {
     implementation(libs.bundles.spring)
     implementation(libs.bundles.kotlin)
+    implementation(libs.bundles.analyzation)
     implementation(libs.liquibase)
     runtimeOnly(libs.bundles.h2)
     runtimeOnly(libs.spring.jdbc)
