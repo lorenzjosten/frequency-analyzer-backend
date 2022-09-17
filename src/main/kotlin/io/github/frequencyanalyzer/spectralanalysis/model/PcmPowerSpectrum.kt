@@ -4,7 +4,7 @@ private typealias CoefficientOrder = Int
 private typealias CoefficientMagnitude = Double
 private typealias FourierCoefficients = MutableMap<CoefficientOrder, CoefficientMagnitude>
 
-class PcmPowerSpectrum(private val fourierCoefficients: FourierCoefficients) {
+class PcmPowerSpectrum(private val fourierCoefficients: FourierCoefficients) : Map<Int, Double> by fourierCoefficients {
 
     fun accumulate(other: PcmPowerSpectrum): PcmPowerSpectrum {
         TODO("Not yet implemented")
