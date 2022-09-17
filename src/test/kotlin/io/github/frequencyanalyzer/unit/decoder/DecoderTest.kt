@@ -57,9 +57,9 @@ class DecoderTest {
     @Test
     fun shouldDecodeFrames() {
         Mp3DecoderImpl(TEST_FILE.data).use {
-            val decodedFrames = it.readFrames(2)
+            val decodedFrames = it.readFrames(3)
 
-            assertEquals(2, decodedFrames.size)
+            assertEquals(3, decodedFrames.size)
 
             decodedFrames
                 .forEach { frame -> assertEquals(testDecoder.readFrame()!!, frame) }
@@ -83,17 +83,16 @@ class DecoderTest {
 
         fun readFrame(): DecodedFrame? {
             val header = bitStream.readFrame()
-            val duration = header.ms_per_frame()
-            var buffer: SampleBuffer? = null
 
-            if (header != null) {
-                buffer = decodeFrame(header, bitStream) as SampleBuffer
+            return if (header != null) {
+                val duration = header.ms_per_frame()
+                val buffer = decodeFrame(header, bitStream) as SampleBuffer
                 bitStream.closeFrame()
+                buffer.let(FrameMapper(duration))
             } else {
                 close()
+                null
             }
-
-            return buffer?.let(FrameMapper(duration))
         }
 
         override fun close() {
