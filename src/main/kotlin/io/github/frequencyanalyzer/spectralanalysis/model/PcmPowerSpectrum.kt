@@ -1,19 +1,8 @@
 package io.github.frequencyanalyzer.spectralanalysis.model
 
-import kotlin.math.abs
-import kotlin.math.log10
-
-private typealias Order = Double
-private typealias Magnitude = Double
-private typealias PowerSpectrum = Map<Order, Magnitude>
-
 class PcmPowerSpectrum(
-    private val powerSpectrum: PowerSpectrum = emptyMap()
-) : Map<Order, Magnitude> by powerSpectrum {
-
-    companion object {
-        const val DECIBEL_FACTOR = 20
-    }
+    private val powerSpectrum: Map<Double, Double>
+) : Map<Double, Double> by powerSpectrum {
 
     fun accumulate(other: PcmPowerSpectrum): PcmPowerSpectrum {
         val accumulated = toMutableMap()
@@ -23,27 +12,11 @@ class PcmPowerSpectrum(
         return PcmPowerSpectrum(accumulated)
     }
 
-    fun scaleOrder(sampleRate: Int, sampleSize: Int): PcmPowerSpectrum {
-        val scalingFactor = sampleRate.toDouble() / sampleSize
-        val scale: (Order) -> Order = { order: Order -> order * scalingFactor }
-        val byScaledOrder = entries.groupBy { (order, _) -> scale(order) }
-        val accumulated = byScaledOrder.mapValues { (_, toAccumulate) -> toAccumulate.sumOf { it.value } }
-
-        return PcmPowerSpectrum(accumulated)
-    }
-
-    fun scaleMagnitude(): PcmPowerSpectrum {
-        val scaled = mapValues {
-            when (it.value) {
-                0.0 -> 0.0
-                else -> DECIBEL_FACTOR * log10(abs(it.value))
-            }
-        }
-
-        return PcmPowerSpectrum(scaled)
+    fun peakFrequency(): Double {
+        return powerSpectrum.maxBy { it.value }.key
     }
 
     override fun toString(): String {
-        return entries.toString()
+        return powerSpectrum.entries.joinToString("\n") { "${it.key} ${it.value}" }
     }
 }
