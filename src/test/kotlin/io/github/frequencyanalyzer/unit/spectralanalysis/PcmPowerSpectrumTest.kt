@@ -34,7 +34,5 @@ class PcmPowerSpectrumTest {
         scaled.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
 
-    private fun fourierCoefficients(): MutableMap<Int, Double> {
-        return mutableMapOf(0 to 0.0, 1 to 1.0, 2 to 2.0, 3 to 3.0)
-    }
+    private fun fourierCoefficients() = mapOf(0 to 0.0, 1 to 1.0, 2 to 2.0, 3 to 3.0)
 }
