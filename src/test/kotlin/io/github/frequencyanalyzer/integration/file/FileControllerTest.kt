@@ -1,12 +1,11 @@
 package io.github.frequencyanalyzer.integration.file
 
-import io.github.frequencyanalyzer.file.model.FileMapper
-import io.github.frequencyanalyzer.file.repository.FileRepository
-import io.github.frequencyanalyzer.file.service.FileServiceImpl
-import io.github.frequencyanalyzer.file.service.UploadServiceImpl
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_RESOURCE
 import io.github.frequencyanalyzer.file.error.FileErrorDto
+import io.github.frequencyanalyzer.file.repository.FileRepository
+import io.github.frequencyanalyzer.file.service.FileServiceImpl
+import io.github.frequencyanalyzer.file.service.UploadServiceImpl
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
@@ -53,24 +52,6 @@ class FileControllerTest(
     fun shouldThrowIfFileErroneous() {
         whenever(fileRepository.save(any()))
             .thenReturn(Mono.error(IllegalArgumentException("corrupt file")))
-
-        client
-            .post()
-            .uri("/file")
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .body(fileBodyInserter())
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectAll(
-                { it.expectBody(FileErrorDto::class.java) },
-                { it.expectStatus().is4xxClientError }
-            )
-    }
-
-    @Test
-    fun shouldThrowIfNoMp3File() {
-        fileRepository.save(any())
-            .thenReturn(Mono.just(TEST_FILE))
 
         client
             .post()
