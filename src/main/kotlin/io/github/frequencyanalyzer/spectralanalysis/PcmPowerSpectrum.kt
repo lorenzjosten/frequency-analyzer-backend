@@ -1,4 +1,4 @@
-package io.github.frequencyanalyzer.spectralanalysis.model
+package io.github.frequencyanalyzer.spectralanalysis
 
 class PcmPowerSpectrum(
     private val powerSpectrum: Map<Double, Double>

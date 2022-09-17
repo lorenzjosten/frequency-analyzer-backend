@@ -1,6 +1,6 @@
 package io.github.frequencyanalyzer.unit.spectralanalysis
 
-import io.github.frequencyanalyzer.spectralanalysis.model.PcmPowerSpectrum
+import io.github.frequencyanalyzer.spectralanalysis.PcmPowerSpectrum
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

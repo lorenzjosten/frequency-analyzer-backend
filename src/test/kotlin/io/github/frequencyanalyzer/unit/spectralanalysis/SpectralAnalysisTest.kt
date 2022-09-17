@@ -3,7 +3,7 @@ package io.github.frequencyanalyzer.unit.spectralanalysis
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.decoder.Mp3DecoderImpl
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
-import io.github.frequencyanalyzer.spectralanalysis.model.SpectralAnalysis
+import io.github.frequencyanalyzer.spectralanalysis.SpectralAnalysis
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 

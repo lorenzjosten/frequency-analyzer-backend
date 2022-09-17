@@ -1,4 +1,4 @@
-package io.github.frequencyanalyzer.spectralanalysis.model
+package io.github.frequencyanalyzer.spectralanalysis
 
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 import kotlin.math.log10
@@ -14,9 +14,7 @@ class SpectralAnalysis(private val decodedFrame: DecodedFrame) {
 
     fun powerSpectrum(): PcmPowerSpectrum {
         val powerSpectrum = (0 until fourierTransform.size / 4)
-            .associate {
-                coefficientOrder(it) to coefficientMagnitude(it)
-            }
+            .associate { coefficientOrder(it) to coefficientMagnitude(it) }
 
         return PcmPowerSpectrum(powerSpectrum)
     }
