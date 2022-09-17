@@ -6,6 +6,10 @@ private typealias FourierCoefficients = MutableMap<CoefficientOrder, Coefficient
 
 class PcmPowerSpectrum(private val fourierCoefficients: FourierCoefficients) : Map<Int, Double> by fourierCoefficients {
 
+    companion object {
+        const val DECIBEL_FACTOR = 20
+    }
+
     fun accumulate(other: PcmPowerSpectrum): PcmPowerSpectrum {
         TODO("Not yet implemented")
     }
