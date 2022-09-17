@@ -20,12 +20,12 @@ class DecoderTest {
     private lateinit var testDecoder: TestDecoder
 
     @BeforeEach
-    fun initTestDecoder() {
+    fun setUp() {
         testDecoder = TestDecoder()
     }
 
     @AfterEach
-    fun closeBitStream() {
+    fun tearDown() {
         testDecoder.close()
     }
 
