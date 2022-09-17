@@ -1,8 +1,5 @@
 package io.github.frequencyanalyzer.decoder.model
 
-import io.github.frequencyanalyzer.decoder.extension.adjustedBuffer
-import javazoom.jl.decoder.SampleBuffer
-
 data class DecodedFrame(
     val sampleFrequency: Int,
     val bufferSize: Int,
@@ -28,8 +25,4 @@ data class DecodedFrame(
         result = 31 * result + buffer.contentHashCode()
         return result
     }
-}
-
-class FrameMapper : (SampleBuffer) -> (DecodedFrame) by {
-    DecodedFrame(it.sampleFrequency, it.bufferLength, it.adjustedBuffer())
 }

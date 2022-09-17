@@ -34,10 +34,3 @@ data class File(
         return result
     }
 }
-
-data class FileDto(
-    val id: Long?,
-    val name: String
-)
-
-class FileMapper : (File) -> FileDto by { FileDto(it.id, it.name) }
