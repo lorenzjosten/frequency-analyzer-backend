@@ -24,8 +24,7 @@ import reactor.core.publisher.Mono
 @Validated
 class FileController(
     private val fileService: FileService,
-    private val uploadService: UploadService,
-    private val fileMapper: FileMapper
+    private val uploadService: UploadService
 ) {
     private val logger: Logger = getLogger("FileController")
 
@@ -36,7 +35,7 @@ class FileController(
         return multiPartFile
             .flatMap(uploadService::retrieveFile)
             .flatMap(fileService::save)
-            .map(fileMapper)
+            .map(FileMapper())
             .onErrorResume { Mono.error { FileProcessingException() } }
     }
 
@@ -46,7 +45,7 @@ class FileController(
 
         return fileService
             .findById(id)
-            .map(fileMapper)
+            .map(FileMapper())
             .switchIfEmpty(Mono.error { FileNotFoundException(id) })
     }
 }
