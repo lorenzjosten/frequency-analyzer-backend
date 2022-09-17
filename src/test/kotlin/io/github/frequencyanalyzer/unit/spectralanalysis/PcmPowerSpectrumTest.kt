@@ -1,6 +1,5 @@
 package io.github.frequencyanalyzer.unit.spectralanalysis
 
-import io.github.frequencyanalyzer.spectralanalysis.extension.rms
 import io.github.frequencyanalyzer.spectralanalysis.model.PcmPowerSpectrum
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -33,7 +32,7 @@ class PcmPowerSpectrumTest {
     @Test
     fun shouldLogScaleMagnitude() {
         val scaled = powerSpectrum.logScaleMagnitude()
-        val expected = powerSpectrum.values.map { PcmPowerSpectrum.DECIBEL_FACTOR * log10(powerSpectrum.rms()) }
+        val expected = powerSpectrum.values.map { PcmPowerSpectrum.DECIBEL_FACTOR * log10(it) }
 
         scaled.values.forEachIndexed { i, magnitude -> assertEquals(expected[i], magnitude) }
     }
