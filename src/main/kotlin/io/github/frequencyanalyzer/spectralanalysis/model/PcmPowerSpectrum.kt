@@ -1,15 +1,14 @@
 package io.github.frequencyanalyzer.spectralanalysis.model
 
 import kotlin.math.log10
-import kotlin.math.roundToInt
 
-private typealias Order = Int
+private typealias Order = Double
 private typealias Magnitude = Double
-private typealias FourierCoefficients = Map<Order, Magnitude>
+private typealias PowerSpectrum = Map<Order, Magnitude>
 
 class PcmPowerSpectrum(
-    private val fourierCoefficients: FourierCoefficients = emptyMap()
-) : Map<Order, Magnitude> by fourierCoefficients {
+    private val powerSpectrum: PowerSpectrum = emptyMap()
+) : Map<Order, Magnitude> by powerSpectrum {
 
     companion object {
         const val DECIBEL_FACTOR = 20
@@ -18,22 +17,27 @@ class PcmPowerSpectrum(
     fun accumulate(other: PcmPowerSpectrum): PcmPowerSpectrum {
         val accumulated = toMutableMap()
 
-        other.map { (o, m) -> accumulated[o] = accumulated[o]?.plus(m) ?: m }
+        other.forEach { o, m -> accumulated[o] = accumulated[o]?.plus(m) ?: m }
 
         return PcmPowerSpectrum(accumulated)
     }
 
-    fun scaleCoefficients(sampleRate: Int, sampleSize: Int): PcmPowerSpectrum {
+    fun scaleOrder(sampleRate: Int, sampleSize: Int): PcmPowerSpectrum {
         val scalingFactor = sampleRate.toDouble() / sampleSize
-        val scale: (Order) -> Order = { order: Order -> (order * scalingFactor).roundToInt() }
+        val scale: (Order) -> Order = { order: Order -> order * scalingFactor }
         val byScaledOrder = entries.groupBy { (order, _) -> scale(order) }
         val accumulated = byScaledOrder.mapValues { (_, toAccumulate) -> toAccumulate.sumOf { it.value } }
 
         return PcmPowerSpectrum(accumulated)
     }
 
-    fun logScaleMagnitude(): PcmPowerSpectrum {
-        val scaled = mapValues { DECIBEL_FACTOR * log10(it.value) }
+    fun scaleMagnitude(): PcmPowerSpectrum {
+        val scaled = mapValues {
+            when (it.value) {
+                0.0 -> 0.0
+                else -> DECIBEL_FACTOR * log10(it.value)
+            }
+        }
 
         return PcmPowerSpectrum(scaled)
     }

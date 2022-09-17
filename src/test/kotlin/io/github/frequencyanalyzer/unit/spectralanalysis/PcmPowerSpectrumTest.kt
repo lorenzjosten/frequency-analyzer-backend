@@ -12,7 +12,7 @@ class PcmPowerSpectrumTest {
     @Test
     fun shouldAccumulate() {
         val other = PcmPowerSpectrum(fourierCoefficients())
-        val expected = listOf(0 to 0.0, 1 to 2.0, 2 to 4.0, 3 to 6.0)
+        val expected = listOf(0.0 to 0.0, 1.0 to 2.0, 2.0 to 4.0, 3.0 to 6.0)
         val accumulated = powerSpectrum.accumulate(other)
 
         accumulated.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
@@ -20,19 +20,19 @@ class PcmPowerSpectrumTest {
 
     @Test
     fun shouldScaleCoefficients() {
-        val expected = listOf(0 to 0.0, 1 to 3.0, 2 to 3.0)
-        val scaled = powerSpectrum.scaleCoefficients(2, 4)
+        val expected = listOf(0.0 to 0.0, 0.5 to 1.0, 1.0 to 2.0, 1.5 to 3.0)
+        val scaled = powerSpectrum.scaleOrder(2, 4)
 
         scaled.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
 
     @Test
     fun shouldLogScaleMagnitude() {
-        val expected = powerSpectrum.mapValues { PcmPowerSpectrum.DECIBEL_FACTOR * log10(it.value) }.toList()
-        val scaled = powerSpectrum.logScaleMagnitude()
+        val expected = listOf(0.0 to 0.0, 1.0 to 0.0, 2.0 to 20 * log10(2.0), 3.0 to 20 * log10(3.0))
+        val scaled = powerSpectrum.scaleMagnitude()
 
         scaled.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
 
-    private fun fourierCoefficients() = mapOf(0 to 0.0, 1 to 1.0, 2 to 2.0, 3 to 3.0)
+    private fun fourierCoefficients() = mapOf(0.0 to 0.0, 1.0 to 1.0, 2.0 to 2.0, 3.0 to 3.0)
 }
