@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 
 @WebFluxTest
 @MockBean(FileRepository::class)
-@Import(FileServiceImpl::class, UploadServiceImpl::class, FileMapper::class)
+@Import(FileServiceImpl::class, UploadServiceImpl::class)
 class FileControllerTest(
     @Autowired private val client: WebTestClient,
     @Autowired private val fileRepository: FileRepository
