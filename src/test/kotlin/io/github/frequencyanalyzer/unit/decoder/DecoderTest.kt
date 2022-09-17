@@ -2,12 +2,13 @@ package io.github.frequencyanalyzer.unit.decoder
 
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_RESOURCE
+import io.github.frequencyanalyzer.decoder.Mp3Decoder
 import io.github.frequencyanalyzer.decoder.Mp3DecoderImpl
 import io.github.frequencyanalyzer.decoder.extension.adjustedBuffer
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
+import io.github.frequencyanalyzer.decoder.model.FrameMapper
 import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Decoder
-import javazoom.jl.decoder.DecoderException
 import javazoom.jl.decoder.SampleBuffer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -33,10 +34,12 @@ class DecoderTest {
     fun shouldNotBeAbleToReadInvalidFile() {
         val tempFile = File
             .createTempFile("invalid", ".mp3")
-            .apply { writeText("test") }
+            .apply { writeText(randomText()) }
 
-        Mp3DecoderImpl(tempFile.readBytes())
-            .use { assertThrows(DecoderException::class.java, it::readFrame) }
+        val decodedFrame = Mp3DecoderImpl(tempFile.readBytes())
+            .use(Mp3Decoder::readFrame)
+
+        assertNull(decodedFrame)
 
         tempFile.delete()
     }
@@ -47,20 +50,19 @@ class DecoderTest {
             val decodedFrame = it.readFrame()
 
             assertNotNull(decodedFrame)
-            assertBufferMatchesFrame(testDecoder.readFrame()!!, decodedFrame)
+            assertEquals(testDecoder.readFrame()!!, decodedFrame)
         }
     }
-
 
     @Test
     fun shouldDecodeFrames() {
         Mp3DecoderImpl(TEST_FILE.data).use {
-            val decodedFrames = it.readFrames(2U)
+            val decodedFrames = it.readFrames(2)
 
             assertEquals(2, decodedFrames.size)
 
             decodedFrames
-                .forEach { frame -> assertBufferMatchesFrame(testDecoder.readFrame()!!, frame) }
+                .forEach { frame -> assertEquals(testDecoder.readFrame()!!, frame) }
         }
     }
 
@@ -75,7 +77,7 @@ class DecoderTest {
         assertNull(mp3Decoder.readFrame())
     }
 
-    private fun assertBufferMatchesFrame(buffer: SampleBuffer, decodedFrame: DecodedFrame?) {
+    private fun assertFramesMatch(buffer: SampleBuffer, decodedFrame: DecodedFrame?) {
         assertAll(
             { assertEquals(buffer.bufferLength, decodedFrame?.bufferSize) },
             { assertEquals(buffer.sampleFrequency, decodedFrame?.sampleFrequency) },
@@ -87,7 +89,7 @@ class DecoderTest {
 
         private val bitStream = Bitstream(TEST_FILE_RESOURCE.inputStream)
 
-        fun readFrame(): SampleBuffer? {
+        fun readFrame(): DecodedFrame? {
             var buffer: SampleBuffer? = null
             val header = bitStream.readFrame()
 
@@ -98,11 +100,15 @@ class DecoderTest {
                 close()
             }
 
-            return buffer
+            return buffer?.let(FrameMapper())
         }
 
         override fun close() {
             bitStream.close()
         }
     }
+
+    private fun randomText(): String = (0..500).map { randomChar().toString() }.reduce(String::plus)
+
+    private fun randomChar(): Char = (Char.MIN_VALUE.rangeTo(Char.MAX_VALUE)).random()
 }
