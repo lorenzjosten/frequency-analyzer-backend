@@ -6,34 +6,40 @@ import kotlin.math.sqrt
 
 class SpectralAnalysis(private val decodedFrame: DecodedFrame) {
 
-    private val fourierTransform: DoubleArray = FourierTransform(decodedFrame).complexForward()
+    private val fourierSequence: DoubleArray = FourierTransform(decodedFrame).complexForward()
 
     companion object {
         const val DECIBEL_FACTOR = 20
     }
 
     fun powerSpectrum(): PcmPowerSpectrum {
-        val powerSpectrum = (0 until fourierTransform.size / 4)
-            .associate { coefficientOrder(it) to coefficientMagnitude(it) }
+        val fourierCoefficients = (0 until fourierSequence.size / 4).associate(::fourierCoefficient)
 
-        return PcmPowerSpectrum(powerSpectrum)
+        return PcmPowerSpectrum(fourierCoefficients)
     }
 
-    private fun coefficientOrder(order: Int): Double {
+    private fun fourierCoefficient(fourierSequenceIndex: Int): Pair<Double, Double> {
+        val order = coefficientOrder(fourierSequenceIndex)
+        val magnitude = coefficientMagnitude(fourierSequenceIndex)
+
+        return order to magnitude
+    }
+
+    private fun coefficientOrder(fourierSequenceIndex: Int): Double {
         val scalingFactor = decodedFrame.run { sampleFrequency.toDouble() / bufferSize }
 
-        return order * scalingFactor
+        return fourierSequenceIndex * scalingFactor
     }
 
-    private fun coefficientMagnitude(order: Int): Double {
-        val magnitude = magnitude(order)
+    private fun coefficientMagnitude(fourierSequenceIndex: Int): Double {
+        val magnitude = magnitude(fourierSequenceIndex)
 
         return scaleMagnitude(magnitude)
     }
 
-    private fun magnitude(order: Int): Double {
-        val re = fourierTransform[2 * order]
-        val im = fourierTransform[2 * order + 1]
+    private fun magnitude(fourierSequenceIndex: Int): Double {
+        val re = fourierSequence[2 * fourierSequenceIndex]
+        val im = fourierSequence[2 * fourierSequenceIndex + 1]
 
         return sqrt(re * re + im * im)
     }
