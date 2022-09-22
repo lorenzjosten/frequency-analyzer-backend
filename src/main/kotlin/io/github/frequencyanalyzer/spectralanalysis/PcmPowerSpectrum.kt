@@ -13,10 +13,10 @@ class PcmPowerSpectrum(
     }
 
     fun peakFrequency(): Double {
-        return powerSpectrum.maxBy { it.value }.key
+        return maxBy { it.value }.key
     }
 
     override fun toString(): String {
-        return powerSpectrum.entries.joinToString("\n") { "${it.key} ${it.value}" }
+        return entries.joinToString("\n") { "${it.key} ${it.value}" }
     }
 }
