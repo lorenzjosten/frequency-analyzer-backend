@@ -21,7 +21,7 @@ class SpectralAnalysisTest {
     fun frequencyPeaksOfAnalyzedFramesShouldBeAsExpected() {
         val peakFrequencies = decodedFrames
             .map { SpectralAnalysis(it) }
-            .map { it.powerSpectrum() }
+            .map { it.pcmPowerSpectrum() }
             .map { it.peakFrequency() }
         val acceptable = (expectedFreq - toleranceFreq / 2 .. expectedFreq + toleranceFreq / 2)
         val accepted = peakFrequencies.count { it in acceptable }

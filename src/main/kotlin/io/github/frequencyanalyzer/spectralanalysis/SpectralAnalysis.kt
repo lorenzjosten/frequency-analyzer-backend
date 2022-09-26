@@ -4,37 +4,35 @@ import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 import kotlin.math.log10
 import kotlin.math.sqrt
 
-class SpectralAnalysis(private val decodedFrame: DecodedFrame) {
+class SpectralAnalysis(decodedFrame: DecodedFrame) {
 
     private val fourierSequence: DoubleArray = FourierTransform(decodedFrame).complexForward()
+
+    private val frequencyPerSequenceIndex = decodedFrame.run { sampleFrequency.toDouble() / bufferSize }
 
     companion object {
         const val DECIBEL_FACTOR = 20
     }
 
-    fun powerSpectrum(): PcmPowerSpectrum {
-        val fourierCoefficients = (0 until fourierSequence.size / 4).associate(::fourierCoefficient)
+    fun pcmPowerSpectrum(): PcmPowerSpectrum {
+        val powerSpectrum = (0 until fourierSequence.size / 4).associate(::frequencyAmplitudeAtSequenceIndex)
 
-        return PcmPowerSpectrum(fourierCoefficients)
+        return PcmPowerSpectrum(powerSpectrum)
     }
 
-    private fun fourierCoefficient(fourierSequenceIndex: Int): Pair<Double, Double> {
-        val order = coefficientOrder(fourierSequenceIndex)
-        val magnitude = coefficientMagnitude(fourierSequenceIndex)
-
-        return order to magnitude
+    private fun frequencyAmplitudeAtSequenceIndex(fourierSequenceIndex: Int): Pair<Double, Double> {
+        return frequency(fourierSequenceIndex) to amplitude(fourierSequenceIndex)
     }
 
-    private fun coefficientOrder(fourierSequenceIndex: Int): Double {
-        val scalingFactor = decodedFrame.run { sampleFrequency.toDouble() / bufferSize }
-
-        return fourierSequenceIndex * scalingFactor
+    private fun frequency(fourierSequenceIndex: Int): Double {
+        return fourierSequenceIndex * frequencyPerSequenceIndex
     }
 
-    private fun coefficientMagnitude(fourierSequenceIndex: Int): Double {
-        val magnitude = magnitude(fourierSequenceIndex)
-
-        return scaleMagnitude(magnitude)
+    private fun amplitude(fourierSequenceIndex: Int): Double {
+        return when (val magnitude = magnitude(fourierSequenceIndex)) {
+            0.0 -> 0.0
+            else -> DECIBEL_FACTOR * log10(magnitude)
+        }
     }
 
     private fun magnitude(fourierSequenceIndex: Int): Double {
@@ -42,12 +40,5 @@ class SpectralAnalysis(private val decodedFrame: DecodedFrame) {
         val im = fourierSequence[2 * fourierSequenceIndex + 1]
 
         return sqrt(re * re + im * im)
-    }
-
-    private fun scaleMagnitude(magnitude: Double): Double {
-        return when (magnitude) {
-            0.0 -> 0.0
-            else -> DECIBEL_FACTOR * log10(magnitude)
-        }
     }
 }
