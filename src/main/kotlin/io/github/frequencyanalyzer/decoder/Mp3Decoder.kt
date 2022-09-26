@@ -5,6 +5,7 @@ import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Decoder
 
 abstract class Mp3Decoder(byteArray: ByteArray) : Decoder(), AutoCloseable {
+
     protected val bitStream = Bitstream(byteArray.inputStream())
 
     abstract fun readFrames(n: Int): List<DecodedFrame>
