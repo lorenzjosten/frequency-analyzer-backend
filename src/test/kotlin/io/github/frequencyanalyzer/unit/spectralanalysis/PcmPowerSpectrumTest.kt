@@ -16,4 +16,14 @@ class PcmPowerSpectrumTest {
 
         accumulated.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
     }
+
+    @Test
+    fun shouldNormalize() {
+        val fourierCoefficients = mapOf(0.0 to 0.0, 1.0 to 1.0, 2.0 to 2.0, 3.0 to 3.0)
+        val powerSpectrum = PcmPowerSpectrum(fourierCoefficients)
+        val expected = listOf(0.0 to 0.0, 1.0 to 2.0 / 6.0, 2.0 to 4.0 / 6.0, 3.0 to 1.0)
+        val normalized = powerSpectrum.normalize()
+
+        normalized.entries.forEachIndexed { i, entry -> assertEquals(expected[i], entry.toPair()) }
+    }
 }
