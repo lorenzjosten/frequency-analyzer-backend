@@ -6,6 +6,8 @@ import io.github.frequencyanalyzer.file.model.FileDto
 import io.github.frequencyanalyzer.file.model.FileMapper
 import io.github.frequencyanalyzer.file.service.FileService
 import io.github.frequencyanalyzer.file.service.UploadService
+import io.github.frequencyanalyzer.spectralanalysis.model.TimedPcmPowerSpectrum
+import io.github.frequencyanalyzer.spectralanalysis.service.SpectralAnalysisService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.MediaType
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -24,7 +27,8 @@ import reactor.core.publisher.Mono
 @Validated
 class FileController(
     private val fileService: FileService,
-    private val uploadService: UploadService
+    private val uploadService: UploadService,
+    private val spectralAnalysisService: SpectralAnalysisService
 ) {
     private val logger: Logger = getLogger("FileController")
 
@@ -36,16 +40,26 @@ class FileController(
             .flatMap(uploadService::retrieveFile)
             .flatMap(fileService::save)
             .map(FileMapper())
-            .onErrorResume { Mono.error { FileProcessingException() } }
+            .onErrorResume { Mono.error(FileProcessingException()) }
     }
 
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun get(@PathVariable("id") id: Long): Mono<FileDto> {
-        logger.info("Looking for file with id $id.")
+        logger.info("Retrieving file with id $id.")
 
         return fileService
             .findById(id)
             .map(FileMapper())
-            .switchIfEmpty(Mono.error { FileNotFoundException(id) })
+            .switchIfEmpty(Mono.error(FileNotFoundException(id)))
     }
+
+    @GetMapping("/{id}/power-spectrum", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun powerSpectrum(@PathVariable("id") id: Long): Flux<TimedPcmPowerSpectrum> {
+        logger.info("Calculating power spectrum for file with id $id.")
+
+        return spectralAnalysisService
+            .analyseFile(id)
+            .switchIfEmpty(Mono.error(FileProcessingException()))
+    }
+
 }
