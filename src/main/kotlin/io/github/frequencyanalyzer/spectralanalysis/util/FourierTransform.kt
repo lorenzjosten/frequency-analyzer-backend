@@ -1,4 +1,4 @@
-package io.github.frequencyanalyzer.spectralanalysis
+package io.github.frequencyanalyzer.spectralanalysis.util
 
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D

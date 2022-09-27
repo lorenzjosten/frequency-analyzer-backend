@@ -1,6 +1,7 @@
-package io.github.frequencyanalyzer.spectralanalysis
+package io.github.frequencyanalyzer.spectralanalysis.util
 
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
+import io.github.frequencyanalyzer.spectralanalysis.model.PcmPowerSpectrum
 import kotlin.math.log10
 import kotlin.math.sqrt
 
