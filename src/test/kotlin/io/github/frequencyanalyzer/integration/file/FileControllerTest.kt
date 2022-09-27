@@ -6,6 +6,8 @@ import io.github.frequencyanalyzer.file.error.FileErrorDto
 import io.github.frequencyanalyzer.file.repository.FileRepository
 import io.github.frequencyanalyzer.file.service.FileServiceImpl
 import io.github.frequencyanalyzer.file.service.UploadServiceImpl
+import io.github.frequencyanalyzer.spectralanalysis.model.TimedPcmPowerSpectrum
+import io.github.frequencyanalyzer.spectralanalysis.service.SpectralAnalysisServiceImpl
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
@@ -16,19 +18,20 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBodyList
 import org.springframework.web.reactive.function.BodyInserters
 import reactor.core.publisher.Mono
 
 @WebFluxTest
 @MockBean(FileRepository::class)
-@Import(FileServiceImpl::class, UploadServiceImpl::class)
+@Import(FileServiceImpl::class, UploadServiceImpl::class, SpectralAnalysisServiceImpl::class)
 class FileControllerTest(
     @Autowired private val client: WebTestClient,
-    @Autowired private val fileRepository: FileRepository
+    @Autowired private val fileRepository: FileRepository,
 ) {
 
     @Test
-    fun shouldReturnNewFileDto() {
+    fun shouldCreateNewFile() {
         val id = 1L
 
         whenever(fileRepository.save(any()))
@@ -67,7 +70,7 @@ class FileControllerTest(
     }
 
     @Test
-    fun shouldReturnOldFileDto() {
+    fun shouldFindFile() {
         val id = 1L
 
         whenever(fileRepository.findById(id))
@@ -100,6 +103,42 @@ class FileControllerTest(
             .expectAll(
                 { it.expectBody(FileErrorDto::class.java) },
                 { it.expectStatus().isNotFound }
+            )
+    }
+
+    @Test
+    fun shouldCalculatePowerSpectrum() {
+        val id = 1L
+
+        whenever(fileRepository.findById(id))
+            .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
+
+        client
+            .get()
+            .uri("/file/$id/power-spectrum")
+            .accept(MediaType.TEXT_EVENT_STREAM)
+            .exchange()
+            .expectAll(
+                { it.expectBodyList<TimedPcmPowerSpectrum>() },
+                { it.expectStatus().is2xxSuccessful }
+            )
+    }
+
+    @Test
+    fun shouldThrowIfCalculatePowerSpectrumForEmptyFile() {
+        val id = 1L
+
+        whenever(fileRepository.findById(id))
+            .thenReturn(Mono.just(TEST_FILE.copy(id = id, data = ByteArray(0))))
+
+        client
+            .get()
+            .uri("/file/$id/power-spectrum")
+            .accept(MediaType.TEXT_EVENT_STREAM)
+            .exchange()
+            .expectAll(
+                { it.expectBodyList<FileErrorDto>().contains(FileErrorDto("Cannot process file.")) },
+                { it.expectStatus().is4xxClientError }
             )
     }
 
