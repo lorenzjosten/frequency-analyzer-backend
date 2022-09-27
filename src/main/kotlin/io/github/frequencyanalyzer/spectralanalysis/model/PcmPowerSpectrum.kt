@@ -1,12 +1,12 @@
-package io.github.frequencyanalyzer.spectralanalysis
+package io.github.frequencyanalyzer.spectralanalysis.model
 
 class PcmPowerSpectrum(
-    private val powerSpectrum: Map<Double, Double>
+    private val powerSpectrum: Map<Double, Double>,
 ) : Map<Double, Double> by powerSpectrum {
 
     fun normalize(): PcmPowerSpectrum {
         val maxAmplitude = maxBy { it.value }.value
-        val normalized = mapValues { it.value / maxAmplitude }
+        val normalized = mapValues { it.value.normalize(maxAmplitude) }
 
         return PcmPowerSpectrum(normalized)
     }
@@ -26,4 +26,6 @@ class PcmPowerSpectrum(
     override fun toString(): String {
         return entries.joinToString("\n") { "${it.key} ${it.value}" }
     }
+
+    private fun Double.normalize(max: Double) = if (max > 0.0) div(max) else 0.0
 }
