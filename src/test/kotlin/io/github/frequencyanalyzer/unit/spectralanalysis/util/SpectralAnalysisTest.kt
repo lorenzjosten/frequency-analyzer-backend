@@ -23,7 +23,7 @@ class SpectralAnalysisTest {
             .map { SpectralAnalysis(it) }
             .map { it.pcmPowerSpectrum() }
             .map { it.peakFrequency() }
-        val acceptable = (expectedFreq - toleranceFreq / 2 .. expectedFreq + toleranceFreq / 2)
+        val acceptable = (expectedFreq - toleranceFreq / 2..expectedFreq + toleranceFreq / 2)
         val accepted = peakFrequencies.count { it in acceptable }
 
         assertTrue(failThreshold < accepted.toDouble() / peakFrequencies.size)

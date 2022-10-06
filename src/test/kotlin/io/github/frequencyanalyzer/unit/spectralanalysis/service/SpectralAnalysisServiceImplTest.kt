@@ -33,8 +33,8 @@ class SpectralAnalysisServiceImplTest(
             .create(spectralAnalysisService.analyseFile(id))
             .expectNextMatches {
                 it.time != 0f &&
-                it.powerSpectrum.isNotEmpty() &&
-                it.powerSpectrum.values.none { v -> v > 1.0 }
+                    it.powerSpectrum.isNotEmpty() &&
+                    it.powerSpectrum.values.none { v -> v > 1.0 }
             }
     }
 

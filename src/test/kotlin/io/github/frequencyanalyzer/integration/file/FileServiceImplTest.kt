@@ -1,10 +1,10 @@
 package io.github.frequencyanalyzer.integration.file
 
+import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.file.model.File
 import io.github.frequencyanalyzer.file.repository.FileRepository
 import io.github.frequencyanalyzer.file.service.FileService
 import io.github.frequencyanalyzer.integration.IntegrationTest
-import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,8 +28,8 @@ class FileServiceImplTest(
             .create(fileService.save(TEST_FILE))
             .expectNextMatches {
                 it.name == TEST_FILE.name &&
-                it.hasId() &&
-                it.data.contentEquals(TEST_FILE.data)
+                    it.hasId() &&
+                    it.data.contentEquals(TEST_FILE.data)
             }
             .verifyComplete()
 
@@ -37,8 +37,8 @@ class FileServiceImplTest(
             .create(fileRepository.findAll())
             .expectNextMatches {
                 it.name == TEST_FILE.name &&
-                it.hasId() &&
-                it.data.contentEquals(TEST_FILE.data)
+                    it.hasId() &&
+                    it.data.contentEquals(TEST_FILE.data)
             }
             .verifyComplete()
     }
@@ -77,8 +77,8 @@ class FileServiceImplTest(
             .create(fileService.findById(id))
             .expectNextMatches {
                 it.name == TEST_FILE.name &&
-                it.hasId() &&
-                it.data.contentEquals(TEST_FILE.data)
+                    it.hasId() &&
+                    it.data.contentEquals(TEST_FILE.data)
             }
             .verifyComplete()
     }
@@ -88,7 +88,7 @@ class FileServiceImplTest(
         val id = createTestFile().id!!
 
         StepVerifier
-            .create(fileService.findById(id+1))
+            .create(fileService.findById(id + 1))
             .verifyComplete()
     }
 

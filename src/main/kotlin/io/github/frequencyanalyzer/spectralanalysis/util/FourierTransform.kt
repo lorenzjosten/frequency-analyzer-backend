@@ -1,7 +1,7 @@
 package io.github.frequencyanalyzer.spectralanalysis.util
 
-import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D
+import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 
 class FourierTransform(private val frame: DecodedFrame) {
 

@@ -17,7 +17,7 @@ class UploadServiceImplTest(@Autowired private val uploadService: UploadService)
             .create(uploadService.retrieveFile(TEST_FILE_PART))
             .expectNextMatches {
                 it.name == TEST_FILE.name &&
-                it.data.contentEquals(TEST_FILE.data)
+                    it.data.contentEquals(TEST_FILE.data)
             }
             .verifyComplete()
     }
