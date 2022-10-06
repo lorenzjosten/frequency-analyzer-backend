@@ -12,7 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
-import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,7 +24,6 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/file")
-@Validated
 class FileController(
     private val fileService: FileService,
     private val uploadService: UploadService,
@@ -40,7 +39,7 @@ class FileController(
             .flatMap(uploadService::retrieveFile)
             .flatMap(fileService::save)
             .map(FileMapper())
-            .onErrorResume { Mono.error(FileProcessingException()) }
+            //.onErrorResume { Mono.error(FileProcessingException()) }
     }
 
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -53,6 +52,22 @@ class FileController(
             .switchIfEmpty(Mono.error(FileNotFoundException(id)))
     }
 
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun get(): Flux<FileDto> {
+        logger.info("Retrieving all files.")
+
+        return fileService
+            .findAll()
+            .map(FileMapper())
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable("id") id: Long): Mono<Void> {
+        logger.info("Deleting file with id $id.")
+
+        return fileService.deleteById(id)
+    }
+
     @GetMapping("/{id}/power-spectrum", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun powerSpectrum(@PathVariable("id") id: Long): Flux<TimedPcmPowerSpectrum> {
         logger.info("Calculating power spectrum for file with id $id.")
@@ -61,5 +76,4 @@ class FileController(
             .analyseFile(id)
             .switchIfEmpty(Mono.error(FileProcessingException()))
     }
-
 }
