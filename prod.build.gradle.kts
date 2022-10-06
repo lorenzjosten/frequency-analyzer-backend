@@ -9,7 +9,7 @@ dependencies {
 
 tasks.withType(JavaExec::class) {
     jvmArgs = listOf("-Xmx1024M", "-Xms1024M")
-    environment = mapOf("spring.profiles.active" to "composite")
+    environment = mapOf("spring.profiles.active" to "prod")
 }
 
 tasks.withType(ProcessResources::class) {
