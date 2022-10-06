@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 defaultTasks(":bootRun")
 
 plugins {
+    idea
     jacoco
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency)
@@ -31,7 +32,11 @@ dependencies {
 
 val inComposite = gradle.parent != null
 
-if (inComposite) apply("composite.build.gradle.kts")
+if (inComposite) {
+    apply("prod.build.gradle.kts")
+} else {
+    apply("dev.build.gradle.kts")
+}
 
 tasks.withType(KotlinCompile::class) {
     kotlinOptions {
