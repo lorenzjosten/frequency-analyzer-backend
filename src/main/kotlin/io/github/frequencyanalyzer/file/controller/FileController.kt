@@ -39,7 +39,7 @@ class FileController(
             .flatMap(uploadService::retrieveFile)
             .flatMap(fileService::save)
             .map(FileMapper())
-            //.onErrorResume { Mono.error(FileProcessingException()) }
+            .onErrorResume { Mono.error(FileProcessingException()) }
     }
 
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
