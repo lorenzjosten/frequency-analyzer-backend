@@ -6,18 +6,21 @@ databaseChangeLog:
       author: lorenzjosten
       changes:
         - createTable:
-            tableName: file
+            tableName: track
             columns:
               - column:
                   name: id
                   type: bigint
                   autoIncrement: true
                   constraints:
+                    unique: true
+                    nullable: false
+                    notNullConstraintName: track_pkey_not_null
                     primaryKey: true
-                    primaryKeyName: file_pkey
+                    primaryKeyName: track_pkey
               - column:
                   name: name
                   type: varchar(255)
-              - column:
-                  name: data
-                  type: varbinary
+                  constraints:
+                    nullable: false
+                    notNullConstraintName: track_name_not_null

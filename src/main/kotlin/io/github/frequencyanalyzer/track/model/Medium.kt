@@ -1,27 +1,23 @@
-package io.github.frequencyanalyzer.file.model
+package io.github.frequencyanalyzer.track.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 
-@Table("file")
-data class File(
+@Table("medium")
+data class Medium(
     @Id val id: Long? = null,
-    @NotBlank val name: String,
+    val trackId: Long? = null,
     @NotEmpty val data: ByteArray
 ) {
-
-    fun hasId(): Boolean = id != null
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as File
+        other as Medium
 
         if (id != other.id) return false
-        if (name != other.name) return false
+        if (trackId != other.trackId) return false
         if (!data.contentEquals(other.data)) return false
 
         return true
@@ -29,8 +25,9 @@ data class File(
 
     override fun hashCode(): Int {
         var result = id?.hashCode() ?: 0
-        result = 31 * result + name.hashCode()
+        result = 31 * result + (trackId?.hashCode() ?: 0)
         result = 31 * result + data.contentHashCode()
         return result
     }
 }
+

@@ -1,0 +1,32 @@
+---
+
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: lorenzjosten
+      changes:
+        - createTable:
+            tableName: medium
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: medium_pkey
+                    unique: true
+                    nullable: false
+                    notNullConstraintName: medium_pkey_not_null
+              - column:
+                  name: track_id
+                  type: bigint
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: data
+                  type: varbinary
+                  constraints:
+                    nullable: false
+                    notNullConstraintName: medium_data_not_null

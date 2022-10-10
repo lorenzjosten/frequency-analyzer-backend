@@ -2,4 +2,6 @@
 
 databaseChangeLog:
   - include:
-      file: db/changelog/create-table-file.yml
+      file: db/changelog/create-table-track.yml
+  - include:
+      file: db/changelog/create-table-medium.yml
