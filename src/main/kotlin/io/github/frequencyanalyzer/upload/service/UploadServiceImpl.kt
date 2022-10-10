@@ -1,6 +1,6 @@
-package io.github.frequencyanalyzer.file.service
+package io.github.frequencyanalyzer.upload.service
 
-import io.github.frequencyanalyzer.file.model.File
+import io.github.frequencyanalyzer.upload.model.File
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
