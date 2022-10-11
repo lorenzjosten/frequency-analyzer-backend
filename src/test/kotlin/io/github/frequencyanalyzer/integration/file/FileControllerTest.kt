@@ -2,10 +2,10 @@ package io.github.frequencyanalyzer.integration.file
 
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_RESOURCE
-import io.github.frequencyanalyzer.file.error.FileErrorDto
+import io.github.frequencyanalyzer.track.error.TrackErrorDto
 import io.github.frequencyanalyzer.file.repository.FileRepository
 import io.github.frequencyanalyzer.file.service.FileServiceImpl
-import io.github.frequencyanalyzer.file.service.UploadServiceImpl
+import io.github.frequencyanalyzer.upload.service.UploadServiceImpl
 import io.github.frequencyanalyzer.spectralanalysis.model.TimedPcmPowerSpectrum
 import io.github.frequencyanalyzer.spectralanalysis.service.SpectralAnalysisServiceImpl
 import org.junit.jupiter.api.Test
@@ -64,7 +64,7 @@ class FileControllerTest(
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectAll(
-                { it.expectBody(FileErrorDto::class.java) },
+                { it.expectBody(TrackErrorDto::class.java) },
                 { it.expectStatus().is4xxClientError }
             )
     }
@@ -101,7 +101,7 @@ class FileControllerTest(
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectAll(
-                { it.expectBody(FileErrorDto::class.java) },
+                { it.expectBody(TrackErrorDto::class.java) },
                 { it.expectStatus().isNotFound }
             )
     }
@@ -137,7 +137,7 @@ class FileControllerTest(
             .accept(MediaType.TEXT_EVENT_STREAM)
             .exchange()
             .expectAll(
-                { it.expectBodyList<FileErrorDto>().contains(FileErrorDto("Cannot process file.")) },
+                { it.expectBodyList<TrackErrorDto>().contains(TrackErrorDto("Cannot process file.")) },
                 { it.expectStatus().is4xxClientError }
             )
     }

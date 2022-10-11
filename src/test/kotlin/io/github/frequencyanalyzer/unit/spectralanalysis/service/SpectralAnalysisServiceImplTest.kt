@@ -1,7 +1,7 @@
 package io.github.frequencyanalyzer.unit.spectralanalysis.service
 
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
-import io.github.frequencyanalyzer.file.error.FileNotFoundException
+import io.github.frequencyanalyzer.track.error.TrackNotFoundException
 import io.github.frequencyanalyzer.file.service.FileService
 import io.github.frequencyanalyzer.spectralanalysis.service.SpectralAnalysisService
 import org.junit.jupiter.api.Test
@@ -30,7 +30,7 @@ class SpectralAnalysisServiceImplTest(
         whenever(fileService.findById(id)).thenReturn(Mono.just(TEST_FILE))
 
         StepVerifier
-            .create(spectralAnalysisService.analyseFile(id))
+            .create(spectralAnalysisService.analyseTrack(id))
             .expectNextMatches {
                 it.time != 0f &&
                     it.powerSpectrum.isNotEmpty() &&
@@ -45,7 +45,7 @@ class SpectralAnalysisServiceImplTest(
         whenever(fileService.findById(id)).thenReturn(Mono.empty())
 
         StepVerifier
-            .create(spectralAnalysisService.analyseFile(id))
-            .expectError(FileNotFoundException::class)
+            .create(spectralAnalysisService.analyseTrack(id))
+            .expectError(TrackNotFoundException::class)
     }
 }

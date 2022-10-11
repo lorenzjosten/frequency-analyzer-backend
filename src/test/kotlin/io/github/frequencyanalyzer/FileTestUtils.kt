@@ -1,6 +1,5 @@
 package io.github.frequencyanalyzer
 
-import io.github.frequencyanalyzer.file.model.File
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
 import org.springframework.core.io.buffer.DataBuffer
@@ -16,10 +15,10 @@ sealed class FileTestUtils {
     companion object {
         val TEST_FILE_RESOURCE: Resource = ClassPathResource("440Hz-5sec.mp3")
         val TEST_FILE_PART: FilePart = createFilePart()
-        val TEST_FILE: File = createFile()
+        val TEST_FILE: Medium = createFile()
 
-        private fun createFile(): File {
-            return TEST_FILE_RESOURCE.file.run { File(name = name, data = readBytes()) }
+        private fun createFile(): Medium {
+            return TEST_FILE_RESOURCE.file.run { Medium(name = name, data = readBytes()) }
         }
 
         private fun createFilePart(): FilePart {

@@ -2,7 +2,7 @@ package io.github.frequencyanalyzer.unit.file
 
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_PART
-import io.github.frequencyanalyzer.file.service.UploadService
+import io.github.frequencyanalyzer.upload.service.UploadService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

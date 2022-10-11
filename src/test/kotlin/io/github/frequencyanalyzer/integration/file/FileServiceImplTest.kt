@@ -1,7 +1,6 @@
 package io.github.frequencyanalyzer.integration.file
 
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
-import io.github.frequencyanalyzer.file.model.File
 import io.github.frequencyanalyzer.file.repository.FileRepository
 import io.github.frequencyanalyzer.file.service.FileService
 import io.github.frequencyanalyzer.integration.IntegrationTest
@@ -92,7 +91,7 @@ class FileServiceImplTest(
             .verifyComplete()
     }
 
-    private fun createTestFile(): File {
+    private fun createTestFile(): Medium {
         return fileRepository
             .save(TEST_FILE)
             .block()!!
