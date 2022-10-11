@@ -1,7 +1,7 @@
 package io.github.frequencyanalyzer.decoder
 
+import io.github.frequencyanalyzer.decoder.extension.adjustedBuffer
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
-import io.github.frequencyanalyzer.decoder.model.FrameMapper
 import javazoom.jl.decoder.Header
 import javazoom.jl.decoder.SampleBuffer
 
@@ -25,6 +25,11 @@ class Mp3DecoderImpl(byteArray: ByteArray) : Mp3Decoder(byteArray) {
 
         bitStream.closeFrame()
 
-        return decodedBuffer.let(FrameMapper(duration))
+        return DecodedFrame(
+            decodedBuffer.sampleFrequency,
+            decodedBuffer.bufferLength,
+            decodedBuffer.adjustedBuffer(),
+            duration
+        )
     }
 }

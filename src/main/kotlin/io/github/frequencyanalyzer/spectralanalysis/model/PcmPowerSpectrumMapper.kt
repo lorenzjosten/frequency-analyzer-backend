@@ -1,5 +1,8 @@
 package io.github.frequencyanalyzer.spectralanalysis.model
 
-class PcmPowerSpectrumMapper(time: Float) : (PcmPowerSpectrum) -> TimedPcmPowerSpectrum by {
-    TimedPcmPowerSpectrum(time, it.normalize())
+import org.springframework.stereotype.Component
+
+@Component
+class PcmPowerSpectrumMapper : (PcmPowerSpectrum, Float) -> TimedPcmPowerSpectrum by { spectrum, time ->
+    TimedPcmPowerSpectrum(time, spectrum.normalize())
 }

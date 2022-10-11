@@ -5,5 +5,5 @@ import reactor.core.publisher.Flux
 
 interface SpectralAnalysisService {
 
-    fun analyseFile(id: Long): Flux<TimedPcmPowerSpectrum>
+    fun analyseTrack(id: Long): Flux<TimedPcmPowerSpectrum>
 }

@@ -3,35 +3,38 @@ package io.github.frequencyanalyzer.spectralanalysis.service
 import io.github.frequencyanalyzer.decoder.Mp3Decoder
 import io.github.frequencyanalyzer.decoder.Mp3DecoderImpl
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
-import io.github.frequencyanalyzer.file.error.FileNotFoundException
-import io.github.frequencyanalyzer.file.model.File
-import io.github.frequencyanalyzer.file.service.FileService
+import io.github.frequencyanalyzer.track.error.MediumNotFoundException
+import io.github.frequencyanalyzer.track.model.Medium
+import io.github.frequencyanalyzer.track.model.MediumRepository
 import io.github.frequencyanalyzer.spectralanalysis.model.PcmPowerSpectrumMapper
 import io.github.frequencyanalyzer.spectralanalysis.model.TimedPcmPowerSpectrum
-import io.github.frequencyanalyzer.spectralanalysis.util.SpectralAnalysis
+import io.github.frequencyanalyzer.spectralanalysis.SpectralAnalysis
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
-class SpectralAnalysisServiceImpl(private val fileService: FileService) : SpectralAnalysisService {
+class SpectralAnalysisServiceImpl(
+    private val media: MediumRepository,
+    private val spectrumMapper: PcmPowerSpectrumMapper
+    ) : SpectralAnalysisService {
 
-    override fun analyseFile(id: Long): Flux<TimedPcmPowerSpectrum> {
-        return fileService
+    override fun analyseTrack(id: Long): Flux<TimedPcmPowerSpectrum> {
+        return media
             .findById(id)
-            .switchIfEmpty(Mono.error(FileNotFoundException(id)))
-            .flatMapMany(::decodeFile)
+            .switchIfEmpty(Mono.error(MediumNotFoundException(id)))
+            .flatMapMany(::decodeMedium)
             .index { i, frame ->
                 val spectrum = SpectralAnalysis(frame).pcmPowerSpectrum()
                 val time = i * frame.durationMs
 
-                spectrum.let(PcmPowerSpectrumMapper(time))
+                spectrumMapper(spectrum, time)
             }
     }
 
-    private fun decodeFile(file: File): Flux<DecodedFrame> {
+    private fun decodeMedium(medium: Medium): Flux<DecodedFrame> {
         return Flux.using(
-            { Mp3DecoderImpl(file.data) },
+            { Mp3DecoderImpl(medium.data) },
             { decodingFlux(it) },
             { it.close() }
         )
