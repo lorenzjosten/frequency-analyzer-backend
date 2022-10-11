@@ -13,7 +13,11 @@ class WebFluxConfig : WebFluxConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry
-            .addMapping("/file/**")
+            .addMapping("/track/**")
+            .allowedOrigins("*")
+            .allowedMethods("*")
+        registry
+            .addMapping("/upload")
             .allowedOrigins("*")
             .allowedMethods("*")
     }
