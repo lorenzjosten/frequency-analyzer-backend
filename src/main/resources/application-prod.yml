@@ -3,3 +3,9 @@
 logging:
   level.root: ERROR
   file.name: ../log/error.log
+
+
+org:
+  jobrunr:
+    dashboard:
+      enabled: false

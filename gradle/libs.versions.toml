@@ -1,10 +1,10 @@
 [versions]
 frontend = "1.0"
-spring-boot = "2.7.3"
-spring-dependency = "1.0.13.RELEASE"
-kotlin = "1.7.10"
+spring-boot = "2.7.4"
+spring-dependency = "1.0.14.RELEASE"
+kotlin = "1.7.20"
 liquibase = "4.16.0"
-kotlin-mockito =  "4.0.0"
+kotlin-mockito = "4.0.0"
 kotlin-lint = "11.0.0"
 jlayer = "1.0.1"
 jtransforms = "2.4.0"
@@ -22,7 +22,7 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 kotlin-reactor-ext = { group = "io.projectreactor.kotlin", name = "reactor-kotlin-extensions" }
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
 kotlin-jackson = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
-kotlin-mockito = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "kotlin-mockito"}
+kotlin-mockito = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "kotlin-mockito" }
 h2-db = { group = "com.h2database", name = "h2" }
 h2-rdbc = { group = "io.r2dbc", name = "r2dbc-h2" }
 liquibase = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibase" }
@@ -37,8 +37,8 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-lint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "kotlin-lint" }
 
 [bundles]
-spring = [ "spring-r2dbc", "spring-webflux", "spring-validation" ]
-kotlin = [ "kotlin-std-lib", "kotlin-reflect", "kotlin-reactor-ext", "kotlin-coroutines", "kotlin-jackson" ]
-analyzation = [ "jlayer", "jtransforms" ]
-test = [ "spring-test", "reactor-test", "kotlin-mockito" ]
-h2 = [ "h2-db", "h2-rdbc" ]
+spring = ["spring-r2dbc", "spring-webflux", "spring-validation"]
+kotlin = ["kotlin-std-lib", "kotlin-reflect", "kotlin-reactor-ext", "kotlin-coroutines", "kotlin-jackson"]
+analyzation = ["jlayer", "jtransforms"]
+test = ["spring-test", "reactor-test", "kotlin-mockito"]
+h2 = ["h2-db", "h2-rdbc"]

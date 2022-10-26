@@ -6,7 +6,7 @@ databaseChangeLog:
       author: lorenzjosten
       changes:
         - createTable:
-            tableName: track
+            tableName: tracks
             columns:
               - column:
                   name: id

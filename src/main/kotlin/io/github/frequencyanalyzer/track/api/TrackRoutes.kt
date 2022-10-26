@@ -1,6 +1,5 @@
 package io.github.frequencyanalyzer.track.api
 
-import io.github.frequencyanalyzer.track.requesthandler.TrackRequestHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.RequestPredicates.DELETE
@@ -12,13 +11,11 @@ import org.springframework.web.reactive.function.server.ServerResponse
 private const val URI = "/track"
 
 @Configuration
-class TrackRoutes(
-    private val trackRequestHandler: TrackRequestHandler
-) {
+class TrackRoutes(private val trackRequestHandler: TrackRequestHandler) {
 
     @Bean
-    fun findAll(): RouterFunction<ServerResponse> {
-        return route(GET(URI), trackRequestHandler::findAll)
+    fun allTracks(): RouterFunction<ServerResponse> {
+        return route(GET("$URI/subscribe"), trackRequestHandler::subscribe)
     }
 
     @Bean
@@ -32,12 +29,12 @@ class TrackRoutes(
     }
 
     @Bean
-    fun medium(): RouterFunction<ServerResponse> {
-        return route(GET("$URI/{id}/medium"), trackRequestHandler::medium)
+    fun data(): RouterFunction<ServerResponse> {
+        return route(GET("$URI/{id}/data"), trackRequestHandler::data)
     }
 
     @Bean
-    fun powerSpectrum(): RouterFunction<ServerResponse> {
-        return route(GET("$URI/{id}/power-spectrum"), trackRequestHandler::powerSpectrum)
+    fun analyze(): RouterFunction<ServerResponse> {
+        return route(GET("$URI/{id}/analyze"), trackRequestHandler::analyze)
     }
 }

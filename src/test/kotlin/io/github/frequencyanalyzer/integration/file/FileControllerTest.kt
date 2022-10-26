@@ -2,12 +2,12 @@ package io.github.frequencyanalyzer.integration.file
 
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
 import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_RESOURCE
-import io.github.frequencyanalyzer.track.error.TrackErrorDto
 import io.github.frequencyanalyzer.file.repository.FileRepository
 import io.github.frequencyanalyzer.file.service.FileServiceImpl
-import io.github.frequencyanalyzer.upload.service.UploadServiceImpl
 import io.github.frequencyanalyzer.spectralanalysis.model.TimedPcmPowerSpectrum
 import io.github.frequencyanalyzer.spectralanalysis.service.SpectralAnalysisServiceImpl
+import io.github.frequencyanalyzer.upload.error.TrackErrorDto
+import io.github.frequencyanalyzer.upload.service.UploadServiceImpl
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
@@ -26,8 +26,8 @@ import reactor.core.publisher.Mono
 @MockBean(FileRepository::class)
 @Import(FileServiceImpl::class, UploadServiceImpl::class, SpectralAnalysisServiceImpl::class)
 class FileControllerTest(
-    @Autowired private val client: WebTestClient,
-    @Autowired private val fileRepository: FileRepository,
+        @Autowired private val client: WebTestClient,
+        @Autowired private val fileRepository: FileRepository,
 ) {
 
     @Test
@@ -35,38 +35,38 @@ class FileControllerTest(
         val id = 1L
 
         whenever(fileRepository.save(any()))
-            .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
+                .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
 
         client
-            .post()
-            .uri("/file")
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .body(fileBodyInserter())
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectAll(
-                { it.expectStatus().is2xxSuccessful },
-                { it.expectBody().jsonPath("$.name").isEqualTo(TEST_FILE.name) },
-                { it.expectBody().jsonPath("$.id").isEqualTo(id) }
-            )
+                .post()
+                .uri("/file")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(fileBodyInserter())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectAll(
+                        { it.expectStatus().is2xxSuccessful },
+                        { it.expectBody().jsonPath("$.name").isEqualTo(TEST_FILE.name) },
+                        { it.expectBody().jsonPath("$.id").isEqualTo(id) }
+                )
     }
 
     @Test
     fun shouldThrowIfFileErroneous() {
         whenever(fileRepository.save(any()))
-            .thenReturn(Mono.error(IllegalArgumentException("corrupt file")))
+                .thenReturn(Mono.error(IllegalArgumentException("corrupt file")))
 
         client
-            .post()
-            .uri("/file")
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .body(fileBodyInserter())
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectAll(
-                { it.expectBody(TrackErrorDto::class.java) },
-                { it.expectStatus().is4xxClientError }
-            )
+                .post()
+                .uri("/file")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(fileBodyInserter())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectAll(
+                        { it.expectBody(TrackErrorDto::class.java) },
+                        { it.expectStatus().is4xxClientError }
+                )
     }
 
     @Test
@@ -74,18 +74,18 @@ class FileControllerTest(
         val id = 1L
 
         whenever(fileRepository.findById(id))
-            .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
+                .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
 
         client
-            .get()
-            .uri("/file/$id")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectAll(
-                { it.expectStatus().is2xxSuccessful },
-                { it.expectBody().jsonPath("$.name").isEqualTo(TEST_FILE.name) },
-                { it.expectBody().jsonPath("$.id").isEqualTo(id) }
-            )
+                .get()
+                .uri("/file/$id")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectAll(
+                        { it.expectStatus().is2xxSuccessful },
+                        { it.expectBody().jsonPath("$.name").isEqualTo(TEST_FILE.name) },
+                        { it.expectBody().jsonPath("$.id").isEqualTo(id) }
+                )
     }
 
     @Test
@@ -93,17 +93,17 @@ class FileControllerTest(
         val id = 1L
 
         whenever(fileRepository.findById(id))
-            .thenReturn(Mono.empty())
+                .thenReturn(Mono.empty())
 
         client
-            .get()
-            .uri("/file/$id")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectAll(
-                { it.expectBody(TrackErrorDto::class.java) },
-                { it.expectStatus().isNotFound }
-            )
+                .get()
+                .uri("/file/$id")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectAll(
+                        { it.expectBody(TrackErrorDto::class.java) },
+                        { it.expectStatus().isNotFound }
+                )
     }
 
     @Test
@@ -111,17 +111,17 @@ class FileControllerTest(
         val id = 1L
 
         whenever(fileRepository.findById(id))
-            .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
+                .thenReturn(Mono.just(TEST_FILE.copy(id = id)))
 
         client
-            .get()
-            .uri("/file/$id/power-spectrum")
-            .accept(MediaType.TEXT_EVENT_STREAM)
-            .exchange()
-            .expectAll(
-                { it.expectBodyList<TimedPcmPowerSpectrum>() },
-                { it.expectStatus().is2xxSuccessful }
-            )
+                .get()
+                .uri("/file/$id/power-spectrum")
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .exchange()
+                .expectAll(
+                        { it.expectBodyList<TimedPcmPowerSpectrum>() },
+                        { it.expectStatus().is2xxSuccessful }
+                )
     }
 
     @Test
@@ -129,17 +129,17 @@ class FileControllerTest(
         val id = 1L
 
         whenever(fileRepository.findById(id))
-            .thenReturn(Mono.just(TEST_FILE.copy(id = id, data = ByteArray(0))))
+                .thenReturn(Mono.just(TEST_FILE.copy(id = id, data = ByteArray(0))))
 
         client
-            .get()
-            .uri("/file/$id/power-spectrum")
-            .accept(MediaType.TEXT_EVENT_STREAM)
-            .exchange()
-            .expectAll(
-                { it.expectBodyList<TrackErrorDto>().contains(TrackErrorDto("Cannot process file.")) },
-                { it.expectStatus().is4xxClientError }
-            )
+                .get()
+                .uri("/file/$id/power-spectrum")
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .exchange()
+                .expectAll(
+                        { it.expectBodyList<TrackErrorDto>().contains(TrackErrorDto("Cannot process file.")) },
+                        { it.expectStatus().is4xxClientError }
+                )
     }
 
     private fun fileBodyInserter(): BodyInserters.MultipartInserter {

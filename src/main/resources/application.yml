@@ -2,13 +2,21 @@
 
 spring:
   r2dbc:
-    url: r2dbc:h2:mem:///frequency-analyzer;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    url: r2dbc:h2:file://././frequency-analyzer;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
     username: sa
     password:
   liquibase:
     enabled: true
-    url: jdbc:h2:mem:frequency-analyzer;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    url: jdbc:h2:file:./frequency-analyzer;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
     user: sa
     password:
     change-log: classpath://db/changelog/changelog-master.yml
     driver-class-name: org.h2.Driver
+    drop-first: true
+
+analysis:
+  frame-window-ms: 40
+  emission-delay-ms: 5
+  prefetch:
+    high-tide: 10
+    lowTide: 5

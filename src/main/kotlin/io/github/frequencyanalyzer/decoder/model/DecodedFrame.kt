@@ -1,11 +1,21 @@
 package io.github.frequencyanalyzer.decoder.model
 
+import io.github.frequencyanalyzer.decoder.extension.adjustedBuffer
+import javazoom.jl.decoder.SampleBuffer
+
 data class DecodedFrame(
-    val sampleFrequency: Int,
-    val bufferSize: Int,
-    val buffer: ShortArray,
-    val durationMs: Float
+        val sampleFrequency: Int,
+        val bufferSize: Int,
+        val buffer: ShortArray,
+        val durationMs: Float
 ) {
+    constructor(buffer: SampleBuffer, durationMs: Float) : this(
+            buffer.sampleFrequency,
+            buffer.adjustedBuffer().size,
+            buffer.adjustedBuffer(),
+            durationMs
+    )
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

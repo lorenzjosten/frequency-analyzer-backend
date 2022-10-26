@@ -1,0 +1,28 @@
+---
+
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: lorenzjosten
+      changes:
+        - createTable:
+            tableName: track_data
+            columns:
+              - column:
+                  name: track_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: track_id_pkey
+                    references: tracks(id)
+                    foreignKeyName: fk_track_data_track
+                    unique: true
+                    nullable: false
+                    notNullConstraintName: track_pkey_not_null
+              - column:
+                  name: blob
+                  type: blob
+                  constraints:
+                    nullable: false
+                    notNullConstraintName: track_data_not_null
