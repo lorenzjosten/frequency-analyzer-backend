@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
 import io.r2dbc.spi.Blob
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.nio.ByteBuffer
 
@@ -11,7 +12,11 @@ private const val SAVE = "INSERT INTO track_data (track_id, blob) VALUES (:track
 
 private const val FIND = "SELECT t.track_id as trackId, t.blob as blob FROM track_data as t WHERE t.track_id = :trackId"
 
+private const val FIND_ALL = "SELECT t.track_id as trackId, t.blob as blob FROM track_data as t"
+
 private const val DELETE = "DELETE FROM track_data WHERE track_id = :trackId"
+
+private const val DELETE_ALL = "DELETE FROM track_data"
 
 private const val EXISTS = "SELECT COUNT(1) FROM track_data WHERE track_id = :trackId"
 
@@ -28,7 +33,7 @@ class TrackDataRepositoryImpl(private val client: DatabaseClient) : TrackDataRep
                 .map(::ByteBufferBackedInputStream)
                 .flatMap {
                     client.sql(SAVE)
-                            .bind("trackId", data.trackId!!)
+                            .bind("trackId", data.trackId)
                             .bind("blob", it.readAllBytes())
                             .map { _ -> data }
                             .first()
@@ -47,9 +52,25 @@ class TrackDataRepositoryImpl(private val client: DatabaseClient) : TrackDataRep
                 .first()
     }
 
+    override fun findAll(): Flux<TrackData> {
+        return client.sql(FIND_ALL)
+                .map { row ->
+                    TrackData(
+                            trackId = row["trackId"] as Long,
+                            blob = (row["blob"] as ByteBuffer).toBlob()
+                    )
+                }
+                .all()
+    }
+
     override fun delete(trackId: Long): Mono<Void> {
         return client.sql(DELETE)
                 .bind("trackId", trackId)
+                .then()
+    }
+
+    override fun deleteAll(): Mono<Void> {
+        return client.sql(DELETE_ALL)
                 .then()
     }
 
