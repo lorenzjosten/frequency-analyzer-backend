@@ -29,6 +29,15 @@ class SpectralAnalysisServiceImpl(
 ) : SpectralAnalysisService {
     private val logger = getLogger(this::class.java)
 
+    /**
+     * Calculates a timed series of power spectra for a given track id.
+     * Track data is decoded into frames, then grouped by a windowing function.
+     * Power spectra of each window are calculated frame by frame.
+     * The spectra are accumulated and normalized before being returned.
+     *
+     * @param trackId: ID of the track which
+     * @return A timed series of power spectra
+     */
     override fun analyze(trackId: Long): Flux<TimedPcmPowerSpectrum> {
         logger.info("Analyzing track with id $trackId")
 
@@ -40,7 +49,7 @@ class SpectralAnalysisServiceImpl(
                 .index { frameCount, frame -> FrameAtTime(frame, frameCount * frame.durationMs) }
                 .bufferUntil { (_, frameTime) -> frameTime >= windowCount * frameWindowMs }
                 .doOnNext { windowCount++ }
-                .map { frames -> frames.map(::analyzeFrame).reduce(::accumulate).normalize() }
+                .map { bufferedFrames -> bufferedFrames.map(::analyzeFrame).reduce(::accumulate).normalize() }
                 .map { (spectrum, frameTime) -> spectrumMapper(trackId, spectrum, frameTime) }
                 .limitRate(highTide, lowTide)
                 .delayElements(Duration.ofMillis(emissionDelayMs))
