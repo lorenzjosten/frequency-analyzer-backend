@@ -29,59 +29,57 @@ class TrackDataRepositoryImpl(private val client: DatabaseClient) : TrackDataRep
      */
     override fun save(data: TrackData): Mono<TrackData> {
         return data
-                .streamAsMono()
-                .map(::ByteBufferBackedInputStream)
-                .flatMap {
-                    client.sql(SAVE)
-                            .bind("trackId", data.trackId)
-                            .bind("blob", it.readAllBytes())
-                            .map { _ -> data }
-                            .first()
-                }
+            .streamAsMono()
+            .map(::ByteBufferBackedInputStream)
+            .flatMap {
+                client.sql(SAVE)
+                    .bind("trackId", data.trackId)
+                    .bind("blob", it.readAllBytes())
+                    .map { _ -> data }
+                    .first()
+            }
     }
 
     override fun find(trackId: Long): Mono<TrackData> {
         return client.sql(FIND)
-                .bind("trackId", trackId)
-                .map { row ->
-                    TrackData(
-                            trackId = row["trackId"] as Long,
-                            blob = (row["blob"] as ByteBuffer).toBlob()
-                    )
-                }
-                .first()
+            .bind("trackId", trackId)
+            .map { row ->
+                TrackData(
+                    trackId = row["trackId"] as Long,
+                    blob = (row["blob"] as ByteBuffer).toBlob()
+                )
+            }
+            .first()
     }
 
     override fun findAll(): Flux<TrackData> {
         return client.sql(FIND_ALL)
-                .map { row ->
-                    TrackData(
-                            trackId = row["trackId"] as Long,
-                            blob = (row["blob"] as ByteBuffer).toBlob()
-                    )
-                }
-                .all()
+            .map { row ->
+                TrackData(
+                    trackId = row["trackId"] as Long,
+                    blob = (row["blob"] as ByteBuffer).toBlob()
+                )
+            }
+            .all()
     }
 
     override fun delete(trackId: Long): Mono<Void> {
         return client.sql(DELETE)
-                .bind("trackId", trackId)
-                .then()
+            .bind("trackId", trackId)
+            .then()
     }
 
     override fun deleteAll(): Mono<Void> {
         return client.sql(DELETE_ALL)
-                .then()
+            .then()
     }
-
 
     override fun exists(trackId: Long): Mono<Boolean> {
         return client.sql(EXISTS)
-                .bind("trackId", trackId)
-                .map { row -> row[0] == 1 }
-                .first()
+            .bind("trackId", trackId)
+            .map { row -> row[0] == 1 }
+            .first()
     }
 
     private fun ByteBuffer.toBlob() = Blob.from(Mono.just(this))
-
 }

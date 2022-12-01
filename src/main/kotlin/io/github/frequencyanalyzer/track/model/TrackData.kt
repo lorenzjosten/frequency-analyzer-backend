@@ -7,8 +7,8 @@ import reactor.kotlin.core.publisher.toMono
 
 @Table("track_data")
 data class TrackData(
-        val trackId: Long,
-        val blob: Blob
+    val trackId: Long,
+    val blob: Blob
 ) {
 
     fun streamAsFlux() = blob.stream().toFlux()

@@ -18,8 +18,8 @@ import reactor.test.StepVerifier
 @ExtendWith(MockitoExtension::class)
 @SpringBootTest
 class SpectralAnalysisServiceImplTest(
-        @Mock private val trackDataRepository: TrackDataRepository,
-        @InjectMocks @Autowired private val spectralAnalysisService: SpectralAnalysisService
+    @Mock private val trackDataRepository: TrackDataRepository,
+    @InjectMocks @Autowired private val spectralAnalysisService: SpectralAnalysisService
 ) {
 
     @Test
@@ -29,14 +29,14 @@ class SpectralAnalysisServiceImplTest(
         whenever(trackDataRepository.find(data.trackId)).thenReturn(Mono.just(data))
 
         StepVerifier
-                .create(spectralAnalysisService.analyze(data.trackId))
-                .expectNextMatches {
-                    it.time != 0f &&
-                            it.amplitudes.isNotEmpty() &&
-                            it.frequencies.isNotEmpty() &&
-                            it.amplitudes.size == it.frequencies.size
-                    it.amplitudes.none { v -> v.toDouble() > 1.0 }
-                }
+            .create(spectralAnalysisService.analyze(data.trackId))
+            .expectNextMatches {
+                it.time != 0f &&
+                    it.amplitudes.isNotEmpty() &&
+                    it.frequencies.isNotEmpty() &&
+                    it.amplitudes.size == it.frequencies.size
+                it.amplitudes.none { v -> v.toDouble() > 1.0 }
+            }
     }
 
     @Test
@@ -46,7 +46,7 @@ class SpectralAnalysisServiceImplTest(
         whenever(trackDataRepository.find(id)).thenReturn(Mono.empty())
 
         StepVerifier
-                .create(spectralAnalysisService.analyze(id))
-                .expectError(TrackDataError::class.java)
+            .create(spectralAnalysisService.analyze(id))
+            .expectError(TrackDataError::class.java)
     }
 }

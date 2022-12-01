@@ -29,18 +29,18 @@ import reactor.core.publisher.Mono
 @WebFluxTest
 @MockBean(TrackRepository::class, TrackDataRepository::class)
 @Import(
-        UploadRoutes::class,
-        UploadRequestHandler::class,
-        TrackServiceImpl::class,
-        TrackMapper::class,
-        TrackDataMapper::class,
-        TrackErrorHandler::class,
-        TrackDataErrorHandler::class
+    UploadRoutes::class,
+    UploadRequestHandler::class,
+    TrackServiceImpl::class,
+    TrackMapper::class,
+    TrackDataMapper::class,
+    TrackErrorHandler::class,
+    TrackDataErrorHandler::class
 )
 class UploadRoutesTest(
-        @Autowired private val client: WebTestClient,
-        @Autowired private val trackRepository: TrackRepository,
-        @Autowired private val trackDataRepository: TrackDataRepository
+    @Autowired private val client: WebTestClient,
+    @Autowired private val trackRepository: TrackRepository,
+    @Autowired private val trackDataRepository: TrackDataRepository
 ) {
 
     @Test
@@ -49,17 +49,17 @@ class UploadRoutesTest(
         val data = TestFileUtils.createTrackData()
 
         whenever(trackRepository.save(any()))
-                .thenReturn(Mono.just(track))
+            .thenReturn(Mono.just(track))
         whenever(trackDataRepository.save(any()))
-                .thenReturn(Mono.just(data))
+            .thenReturn(Mono.just(data))
 
         val response = client
-                .post()
-                .uri("/upload")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(fileBodyInserter())
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
+            .post()
+            .uri("/upload")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(fileBodyInserter())
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
 
         response.expectStatus().is2xxSuccessful
         response.expectBody().jsonPath("$.name").isEqualTo(track.name)
@@ -71,15 +71,15 @@ class UploadRoutesTest(
         val payload = fileBodyInserter()
 
         whenever(trackRepository.save(any()))
-                .thenReturn(Mono.error(IllegalArgumentException("Cannot save track.")))
+            .thenReturn(Mono.error(IllegalArgumentException("Cannot save track.")))
 
         val response = client
-                .post()
-                .uri("/upload")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(payload)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
+            .post()
+            .uri("/upload")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(payload)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
 
         response.expectStatus().is4xxClientError
         response.expectBody(TrackError::class.java)
@@ -91,17 +91,17 @@ class UploadRoutesTest(
         val payload = fileBodyInserter()
 
         whenever(trackRepository.save(any()))
-                .thenReturn(Mono.just(track))
+            .thenReturn(Mono.just(track))
         whenever(trackDataRepository.save(any()))
-                .thenReturn(Mono.error(IllegalArgumentException("Cannot save track data.")))
+            .thenReturn(Mono.error(IllegalArgumentException("Cannot save track data.")))
 
         val response = client
-                .post()
-                .uri("/upload")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(payload)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
+            .post()
+            .uri("/upload")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(payload)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
 
         response.expectStatus().is4xxClientError
         response.expectBody(TrackDataError::class.java)

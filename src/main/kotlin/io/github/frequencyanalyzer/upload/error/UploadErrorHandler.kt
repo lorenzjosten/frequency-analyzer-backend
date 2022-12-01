@@ -13,9 +13,9 @@ class UploadErrorFilter {
     @Bean
     fun fileUploadNotFound() = WebFilter { exchange: ServerWebExchange, chain: WebFilterChain ->
         chain.filter(exchange)
-                .onErrorResume(NoFileUploadException::class.java) {
-                    exchange.response.statusCode = HttpStatus.BAD_REQUEST
-                    exchange.response.setComplete()
-                }
+            .onErrorResume(NoFileUploadException::class.java) {
+                exchange.response.statusCode = HttpStatus.BAD_REQUEST
+                exchange.response.setComplete()
+            }
     }
 }

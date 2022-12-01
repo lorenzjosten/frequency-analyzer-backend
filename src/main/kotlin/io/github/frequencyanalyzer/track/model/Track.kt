@@ -6,6 +6,6 @@ import javax.validation.constraints.NotBlank
 
 @Table("tracks")
 data class Track(
-        @Id val id: Long? = null,
-        @NotBlank val name: String
+    @Id val id: Long? = null,
+    @NotBlank val name: String
 )

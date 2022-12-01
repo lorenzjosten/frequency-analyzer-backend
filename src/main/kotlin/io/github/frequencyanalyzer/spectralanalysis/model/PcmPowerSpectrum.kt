@@ -1,7 +1,7 @@
 package io.github.frequencyanalyzer.spectralanalysis.model
 
 class PcmPowerSpectrum(
-        private val powerSpectrum: Map<Double, Double>,
+    private val powerSpectrum: Map<Double, Double>,
 ) : Map<Double, Double> by powerSpectrum {
 
     fun normalize(): PcmPowerSpectrum {

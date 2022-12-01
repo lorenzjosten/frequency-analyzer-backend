@@ -8,7 +8,9 @@ import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Decoder
 import javazoom.jl.decoder.SampleBuffer
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File

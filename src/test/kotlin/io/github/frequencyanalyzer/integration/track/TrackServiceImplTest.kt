@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
 
 class TrackServiceImplTest(
-        @Autowired private val trackRepository: TrackRepository,
-        @Autowired private val trackDataRepository: TrackDataRepository,
-        @Autowired private val trackService: TrackService
+    @Autowired private val trackRepository: TrackRepository,
+    @Autowired private val trackDataRepository: TrackDataRepository,
+    @Autowired private val trackService: TrackService
 ) : IntegrationTest {
 
     @BeforeEach
@@ -30,19 +30,19 @@ class TrackServiceImplTest(
         val file = TestFileUtils.createUpload()
 
         StepVerifier
-                .create(trackService.create(file))
-                .expectNextMatches { it.name == file.name && it.id != null }
-                .verifyComplete()
+            .create(trackService.create(file))
+            .expectNextMatches { it.name == file.name && it.id != null }
+            .verifyComplete()
 
         StepVerifier
-                .create(trackRepository.findAll())
-                .expectNextMatches { it.name == file.name && it.id != null }
-                .verifyComplete()
+            .create(trackRepository.findAll())
+            .expectNextMatches { it.name == file.name && it.id != null }
+            .verifyComplete()
 
         StepVerifier
-                .create(trackDataRepository.findAll())
-                .expectNextCount(1)
-                .verifyComplete()
+            .create(trackDataRepository.findAll())
+            .expectNextCount(1)
+            .verifyComplete()
     }
 
     @Test
@@ -50,16 +50,16 @@ class TrackServiceImplTest(
         val file = TestFileUtils.createEmptyUpload()
 
         StepVerifier
-                .create(trackService.create(file))
-                .expectError()
+            .create(trackService.create(file))
+            .expectError()
 
         StepVerifier
-                .create(trackRepository.findAll())
-                .verifyComplete()
+            .create(trackRepository.findAll())
+            .verifyComplete()
 
         StepVerifier
-                .create(trackDataRepository.findAll())
-                .verifyComplete()
+            .create(trackDataRepository.findAll())
+            .verifyComplete()
     }
 
     @Test
@@ -67,16 +67,16 @@ class TrackServiceImplTest(
         val file = TestFileUtils.createUpload().copy(name = "")
 
         StepVerifier
-                .create(trackService.create(file))
-                .expectError()
+            .create(trackService.create(file))
+            .expectError()
 
         StepVerifier
-                .create(trackRepository.findAll())
-                .verifyComplete()
+            .create(trackRepository.findAll())
+            .verifyComplete()
 
         StepVerifier
-                .create(trackDataRepository.findAll())
-                .verifyComplete()
+            .create(trackDataRepository.findAll())
+            .verifyComplete()
     }
 
     @Test
@@ -84,9 +84,9 @@ class TrackServiceImplTest(
         val track = persistTrack()
 
         StepVerifier
-                .create(trackService.find(track.id!!))
-                .expectNextMatches { it.name == track.name }
-                .verifyComplete()
+            .create(trackService.find(track.id!!))
+            .expectNextMatches { it.name == track.name }
+            .verifyComplete()
     }
 
     @Test
@@ -94,8 +94,8 @@ class TrackServiceImplTest(
         val track = persistTrack()
 
         StepVerifier
-                .create(trackService.find(track.id!! + 1))
-                .expectError(TrackNotFoundException::class.java)
+            .create(trackService.find(track.id!! + 1))
+            .expectError(TrackNotFoundException::class.java)
     }
 
     private fun persistTrack(): Track {

@@ -86,5 +86,4 @@ class TrackRoutesTest(@Autowired private val client: WebTestClient, @Autowired p
         assertTrue(events.any { it.event() == "spectrum" })
         assertEquals(events.count() - 1, events.count { it.event() == "spectrum" })
     }
-
 }

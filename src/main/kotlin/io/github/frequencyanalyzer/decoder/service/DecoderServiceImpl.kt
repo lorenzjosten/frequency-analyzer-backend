@@ -14,16 +14,16 @@ class DecoderServiceImpl : DecoderService {
 
     override fun decode(trackData: TrackData): Flux<DecodedFrame> {
         return trackData
-                .streamAsFlux()
-                .map(::ByteBufferBackedInputStream)
-                .flatMap(::decodingFlux)
+            .streamAsFlux()
+            .map(::ByteBufferBackedInputStream)
+            .flatMap(::decodingFlux)
     }
 
     private fun decodingFlux(input: InputStream): Flux<DecodedFrame> {
         return Flux.using(
-                { Mp3DecoderImpl(input) },
-                { frameReadingFlux(it) },
-                { it.close() }
+            { Mp3DecoderImpl(input) },
+            { frameReadingFlux(it) },
+            { it.close() }
         )
     }
 

@@ -19,8 +19,8 @@ import reactor.core.publisher.Sinks
 
 @Service
 class TrackServiceImpl(
-        private val tracks: TrackRepository,
-        private val trackData: TrackDataRepository
+    private val tracks: TrackRepository,
+    private val trackData: TrackDataRepository
 ) : TrackService {
     private val logger = getLogger(this::class.java)
     private val newTracks: Sinks.Many<Track> = Sinks.many().multicast().directAllOrNothing()
@@ -30,8 +30,8 @@ class TrackServiceImpl(
         logger.info("Creating track \"${upload.name}\".")
 
         return saveTrack(upload.name)
-                .flatMap { saveTrackData(it.id!!, upload.data).then(Mono.just(it)) }
-                .doOnNext(newTracks::tryEmitNext)
+            .flatMap { saveTrackData(it.id!!, upload.data).then(Mono.just(it)) }
+            .doOnNext(newTracks::tryEmitNext)
     }
 
     private fun saveTrack(name: String): Mono<Track> {

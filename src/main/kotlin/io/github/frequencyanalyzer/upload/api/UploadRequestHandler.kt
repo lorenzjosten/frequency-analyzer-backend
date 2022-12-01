@@ -20,8 +20,8 @@ private const val FORM_FIELD = "file"
 
 @Component
 class UploadRequestHandler(
-        private val trackService: TrackService,
-        private val toTrackDto: TrackMapper
+    private val trackService: TrackService,
+    private val toTrackDto: TrackMapper
 ) {
 
     fun upload(request: ServerRequest): Mono<ServerResponse> {
@@ -32,23 +32,23 @@ class UploadRequestHandler(
 
     private fun retrieveFile(request: ServerRequest): Mono<Upload> {
         return retrieveFilePart(request)
-                .map { file ->
-                    val name = file.filename()
-                    val content = DataBufferUtils.join(file.content())
-                    val bytes = content.map { it.asByteBuffer() }
-                    val blob = Blob.from(bytes)
+            .map { file ->
+                val name = file.filename()
+                val content = DataBufferUtils.join(file.content())
+                val bytes = content.map { it.asByteBuffer() }
+                val blob = Blob.from(bytes)
 
-                    Upload(name = name, data = blob)
-                }
+                Upload(name = name, data = blob)
+            }
     }
 
     private fun retrieveFilePart(request: ServerRequest): Mono<FilePart> {
         return request
-                .multipartData()
-                .map { it[FORM_FIELD] }
-                .map { it.firstOrNull(::isFilePart) }
-                .mapNotNull { it as FilePart }
-                .switchIfEmpty(Mono.error(NoFileUploadException()))
+            .multipartData()
+            .map { it[FORM_FIELD] }
+            .map { it.firstOrNull(::isFilePart) }
+            .mapNotNull { it as FilePart }
+            .switchIfEmpty(Mono.error(NoFileUploadException()))
     }
 
     private fun isFilePart(part: Part): Boolean = part is FilePart

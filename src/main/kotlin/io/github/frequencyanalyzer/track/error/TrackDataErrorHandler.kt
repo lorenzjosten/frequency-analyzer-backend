@@ -13,18 +13,18 @@ class TrackDataErrorHandler {
     @Bean
     fun trackDataNotFound() = WebFilter { exchange: ServerWebExchange, chain: WebFilterChain ->
         chain.filter(exchange)
-                .onErrorResume(TrackDataNotFoundException::class.java) {
-                    exchange.response.statusCode = HttpStatus.NOT_FOUND
-                    exchange.response.setComplete()
-                }
+            .onErrorResume(TrackDataNotFoundException::class.java) {
+                exchange.response.statusCode = HttpStatus.NOT_FOUND
+                exchange.response.setComplete()
+            }
     }
 
     @Bean
     fun trackDataNotPersisted() = WebFilter { exchange: ServerWebExchange, chain: WebFilterChain ->
         chain.filter(exchange)
-                .onErrorResume(TrackDataPersistenceException::class.java) {
-                    exchange.response.statusCode = HttpStatus.BAD_REQUEST
-                    exchange.response.setComplete()
-                }
+            .onErrorResume(TrackDataPersistenceException::class.java) {
+                exchange.response.statusCode = HttpStatus.BAD_REQUEST
+                exchange.response.setComplete()
+            }
     }
 }

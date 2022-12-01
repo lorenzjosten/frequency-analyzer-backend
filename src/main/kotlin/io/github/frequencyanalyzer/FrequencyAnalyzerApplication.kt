@@ -28,9 +28,9 @@ fun main(args: Array<String>) {
 
 @Component
 class SetupData(
-        private val resourceResolver: ResourcePatternResolver,
-        private val tracks: TrackRepository,
-        private val trackData: TrackDataRepository
+    private val resourceResolver: ResourcePatternResolver,
+    private val tracks: TrackRepository,
+    private val trackData: TrackDataRepository
 ) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments?) {
@@ -54,13 +54,13 @@ class SetupData(
 
     private fun readFiles(): Flux<Upload> {
         return resources()
-                .map {
-                    val file = it.file
-                    val data = ByteBuffer.wrap(file.readBytes())
-                    val blob = Blob.from(Mono.just(data))
-                    Upload(name = it.filename!!, data = blob)
-                }
-                .toFlux()
+            .map {
+                val file = it.file
+                val data = ByteBuffer.wrap(file.readBytes())
+                val blob = Blob.from(Mono.just(data))
+                Upload(name = it.filename!!, data = blob)
+            }
+            .toFlux()
     }
 
     private fun resources(): Flux<Resource> {
