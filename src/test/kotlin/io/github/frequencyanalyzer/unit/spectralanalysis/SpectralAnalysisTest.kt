@@ -1,6 +1,6 @@
-package io.github.frequencyanalyzer.unit.spectralanalysis.util
+package io.github.frequencyanalyzer.unit.spectralanalysis
 
-import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
+import io.github.frequencyanalyzer.TestFileUtils
 import io.github.frequencyanalyzer.decoder.Mp3DecoderImpl
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
 import io.github.frequencyanalyzer.spectralanalysis.SpectralAnalysis
@@ -20,9 +20,9 @@ class SpectralAnalysisTest {
     @Test
     fun frequencyPeaksOfAnalyzedFramesShouldBeAsExpected() {
         val peakFrequencies = decodedFrames
-            .map { SpectralAnalysis(it) }
-            .map { it.pcmPowerSpectrum() }
-            .map { it.peakFrequency() }
+                .map { SpectralAnalysis(it) }
+                .map { it.pcmPowerSpectrum() }
+                .map { it.peakFrequency() }
         val acceptable = (expectedFreq - toleranceFreq / 2..expectedFreq + toleranceFreq / 2)
         val accepted = peakFrequencies.count { it in acceptable }
 
@@ -30,7 +30,9 @@ class SpectralAnalysisTest {
     }
 
     private fun decodeTestFile(): List<DecodedFrame> {
-        return Mp3DecoderImpl(TEST_FILE.data)
-            .use { generateSequence { it.readFrame() }.toList() }
+        val mp3 = TestFileUtils.TEST_FILE_RESOURCE.inputStream
+
+        return Mp3DecoderImpl(mp3)
+                .use { generateSequence { it.readFrame() }.toList() }
     }
 }
