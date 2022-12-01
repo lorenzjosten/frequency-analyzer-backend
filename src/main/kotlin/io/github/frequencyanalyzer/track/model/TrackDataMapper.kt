@@ -8,9 +8,8 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
 @Component
-class TrackDataMapper(bufferFactory: DataBufferFactory = DefaultDataBufferFactory())
-    : (TrackData) -> Mono<DataBuffer> by { data ->
-    data.blob.stream().toMono().map {
-        bufferFactory.wrap(it)
-    }
+class TrackDataMapper(
+    bufferFactory: DataBufferFactory = DefaultDataBufferFactory()
+) : (TrackData) -> Mono<DataBuffer> by {
+    it.blob.stream().toMono().map(bufferFactory::wrap)
 }
