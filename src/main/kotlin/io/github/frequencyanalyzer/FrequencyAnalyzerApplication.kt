@@ -4,7 +4,7 @@ import io.github.frequencyanalyzer.track.model.Track
 import io.github.frequencyanalyzer.track.model.TrackData
 import io.github.frequencyanalyzer.track.model.TrackDataRepository
 import io.github.frequencyanalyzer.track.model.TrackRepository
-import io.github.frequencyanalyzer.upload.model.File
+import io.github.frequencyanalyzer.upload.model.Upload
 import io.r2dbc.spi.Blob
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -34,31 +34,31 @@ class SetupData(
 ) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments?) {
-        readFiles().flatMap { saveFileData(it) }.subscribe()
+        readFiles().flatMap { saveUploadData(it) }.subscribe()
     }
 
     @Transactional
-    fun saveFileData(file: File): Mono<TrackData> {
-        return createTrack(file).flatMap { createTrackData(it, file) }
+    fun saveUploadData(upload: Upload): Mono<TrackData> {
+        return createTrack(upload).flatMap { createTrackData(it, upload) }
     }
 
-    fun createTrack(file: File): Mono<Track> {
-        val track = Track(name = file.name)
+    fun createTrack(upload: Upload): Mono<Track> {
+        val track = Track(name = upload.name)
         return tracks.save(track)
     }
 
-    fun createTrackData(track: Track, file: File): Mono<TrackData> {
-        val data = TrackData(track.id!!, file.data)
+    fun createTrackData(track: Track, upload: Upload): Mono<TrackData> {
+        val data = TrackData(track.id!!, upload.data)
         return trackData.save(data)
     }
 
-    private fun readFiles(): Flux<File> {
+    private fun readFiles(): Flux<Upload> {
         return resources()
                 .map {
                     val file = it.file
                     val data = ByteBuffer.wrap(file.readBytes())
                     val blob = Blob.from(Mono.just(data))
-                    File(name = it.filename!!, data = blob)
+                    Upload(name = it.filename!!, data = blob)
                 }
                 .toFlux()
     }

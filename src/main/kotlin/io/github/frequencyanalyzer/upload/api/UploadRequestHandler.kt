@@ -4,7 +4,7 @@ import io.github.frequencyanalyzer.track.model.TrackDto
 import io.github.frequencyanalyzer.track.model.TrackMapper
 import io.github.frequencyanalyzer.track.service.TrackService
 import io.github.frequencyanalyzer.upload.error.NoFileUploadException
-import io.github.frequencyanalyzer.upload.model.File
+import io.github.frequencyanalyzer.upload.model.Upload
 import io.r2dbc.spi.Blob
 import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.http.MediaType
@@ -21,16 +21,16 @@ private const val FORM_FIELD = "file"
 @Component
 class UploadRequestHandler(
         private val trackService: TrackService,
-        private val trackMapper: TrackMapper
+        private val toTrackDto: TrackMapper
 ) {
 
     fun upload(request: ServerRequest): Mono<ServerResponse> {
-        val track = retrieveFile(request).flatMap(trackService::create).map(trackMapper)
+        val track = retrieveFile(request).flatMap(trackService::create).map(toTrackDto)
 
         return ok().contentType(MediaType.APPLICATION_JSON).body(track, TrackDto::class.java)
     }
 
-    private fun retrieveFile(request: ServerRequest): Mono<File> {
+    private fun retrieveFile(request: ServerRequest): Mono<Upload> {
         return retrieveFilePart(request)
                 .map { file ->
                     val name = file.filename()
@@ -38,7 +38,7 @@ class UploadRequestHandler(
                     val bytes = content.map { it.asByteBuffer() }
                     val blob = Blob.from(bytes)
 
-                    File(name = name, data = blob)
+                    Upload(name = name, data = blob)
                 }
     }
 

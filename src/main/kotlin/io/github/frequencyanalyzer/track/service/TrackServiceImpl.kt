@@ -1,12 +1,14 @@
 package io.github.frequencyanalyzer.track.service
 
 import io.github.frequencyanalyzer.track.error.TrackDataNotFoundException
+import io.github.frequencyanalyzer.track.error.TrackDataPersistenceException
 import io.github.frequencyanalyzer.track.error.TrackNotFoundException
+import io.github.frequencyanalyzer.track.error.TrackPersistenceException
 import io.github.frequencyanalyzer.track.model.Track
 import io.github.frequencyanalyzer.track.model.TrackData
 import io.github.frequencyanalyzer.track.model.TrackDataRepository
 import io.github.frequencyanalyzer.track.model.TrackRepository
-import io.github.frequencyanalyzer.upload.model.File
+import io.github.frequencyanalyzer.upload.model.Upload
 import io.r2dbc.spi.Blob
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Service
@@ -24,22 +26,22 @@ class TrackServiceImpl(
     private val newTracks: Sinks.Many<Track> = Sinks.many().multicast().directAllOrNothing()
 
     @Transactional
-    override fun create(file: File): Mono<Track> {
-        logger.info("Creating track \"${file.name}\".")
+    override fun create(upload: Upload): Mono<Track> {
+        logger.info("Creating track \"${upload.name}\".")
 
-        return saveTrack(file.name)
-                .flatMap { saveTrackData(it.id!!, file.data).then(Mono.just(it)) }
+        return saveTrack(upload.name)
+                .flatMap { saveTrackData(it.id!!, upload.data).then(Mono.just(it)) }
                 .doOnNext(newTracks::tryEmitNext)
     }
 
     private fun saveTrack(name: String): Mono<Track> {
         val track = Track(name = name)
-        return tracks.save(track)
+        return tracks.save(track).onErrorMap { TrackPersistenceException(name) }
     }
 
     private fun saveTrackData(trackId: Long, blob: Blob): Mono<TrackData> {
         val data = TrackData(trackId, blob)
-        return trackData.save(data)
+        return trackData.save(data).onErrorMap { TrackDataPersistenceException(trackId) }
     }
 
     override fun find(id: Long): Mono<Track> {

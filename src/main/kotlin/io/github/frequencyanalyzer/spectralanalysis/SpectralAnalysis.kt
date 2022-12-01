@@ -1,8 +1,8 @@
 package io.github.frequencyanalyzer.spectralanalysis
 
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
+import io.github.frequencyanalyzer.spectralanalysis.fourier.FourierTransform
 import io.github.frequencyanalyzer.spectralanalysis.model.PcmPowerSpectrum
-import io.github.frequencyanalyzer.spectralanalysis.util.FourierTransform
 import kotlin.math.log10
 import kotlin.math.sqrt
 

@@ -2,13 +2,13 @@ package io.github.frequencyanalyzer.track.service
 
 import io.github.frequencyanalyzer.track.model.Track
 import io.github.frequencyanalyzer.track.model.TrackData
-import io.github.frequencyanalyzer.upload.model.File
+import io.github.frequencyanalyzer.upload.model.Upload
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 interface TrackService {
 
-    fun create(file: File): Mono<Track>
+    fun create(upload: Upload): Mono<Track>
 
     fun find(id: Long): Mono<Track>
 
