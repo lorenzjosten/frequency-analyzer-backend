@@ -1,18 +1,14 @@
 package io.github.frequencyanalyzer.unit.decoder
 
-import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE
-import io.github.frequencyanalyzer.FileTestUtils.Companion.TEST_FILE_RESOURCE
+import io.github.frequencyanalyzer.TestFileUtils
 import io.github.frequencyanalyzer.decoder.Mp3Decoder
 import io.github.frequencyanalyzer.decoder.Mp3DecoderImpl
 import io.github.frequencyanalyzer.decoder.model.DecodedFrame
-import io.github.frequencyanalyzer.decoder.model.FrameMapper
 import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Decoder
 import javazoom.jl.decoder.SampleBuffer
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -32,12 +28,9 @@ class DecoderTest {
 
     @Test
     fun shouldNotBeAbleToReadInvalidFile() {
-        val tempFile = File
-            .createTempFile("invalid", ".mp3")
-            .apply { writeText(randomText()) }
+        val tempFile = createTempFile()
 
-        val decodedFrame = Mp3DecoderImpl(tempFile.readBytes())
-            .use(Mp3Decoder::readFrame)
+        val decodedFrame = Mp3DecoderImpl(tempFile.inputStream()).use(Mp3Decoder::readFrame)
 
         assertNull(decodedFrame)
 
@@ -46,7 +39,9 @@ class DecoderTest {
 
     @Test
     fun shouldDecodeFrame() {
-        Mp3DecoderImpl(TEST_FILE.data).use {
+        val mp3 = TestFileUtils.TEST_FILE_RESOURCE.inputStream
+
+        Mp3DecoderImpl(mp3).use {
             val decodedFrame = it.readFrame()
 
             assertNotNull(decodedFrame)
@@ -56,19 +51,21 @@ class DecoderTest {
 
     @Test
     fun shouldDecodeFrames() {
-        Mp3DecoderImpl(TEST_FILE.data).use {
+        val mp3 = TestFileUtils.TEST_FILE_RESOURCE.inputStream
+
+        Mp3DecoderImpl(mp3).use {
             val decodedFrames = it.readFrames(3)
 
             assertEquals(3, decodedFrames.size)
 
-            decodedFrames
-                .forEach { frame -> assertEquals(testDecoder.readFrame()!!, frame) }
+            decodedFrames.forEach { frame -> assertEquals(testDecoder.readFrame()!!, frame) }
         }
     }
 
     @Test
     fun shouldStopDecodingAtEndOfFile() {
-        val mp3Decoder = Mp3DecoderImpl(TEST_FILE.data)
+        val mp3 = TestFileUtils.TEST_FILE_RESOURCE.inputStream
+        val mp3Decoder = Mp3DecoderImpl(mp3)
 
         while (testDecoder.readFrame() != null) {
             mp3Decoder.readFrame()
@@ -78,8 +75,8 @@ class DecoderTest {
     }
 
     private class TestDecoder : Decoder(), AutoCloseable {
-
-        private val bitStream = Bitstream(TEST_FILE_RESOURCE.inputStream)
+        private val mp3 = TestFileUtils.TEST_FILE_RESOURCE.inputStream
+        private val bitStream = Bitstream(mp3)
 
         fun readFrame(): DecodedFrame? {
             val header = bitStream.readFrame()
@@ -88,7 +85,7 @@ class DecoderTest {
                 val duration = header.ms_per_frame()
                 val buffer = decodeFrame(header, bitStream) as SampleBuffer
                 bitStream.closeFrame()
-                buffer.let(FrameMapper(duration))
+                DecodedFrame(buffer, duration)
             } else {
                 close()
                 null
@@ -99,6 +96,8 @@ class DecoderTest {
             bitStream.close()
         }
     }
+
+    private fun createTempFile() = File.createTempFile("invalid", ".mp3").apply { writeText(randomText()) }
 
     private fun randomText(): String = (0..500).map { randomChar().toString() }.reduce(String::plus)
 
