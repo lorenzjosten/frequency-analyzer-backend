@@ -14,8 +14,8 @@ private const val URI = "/track"
 class TrackRoutes(private val trackRequestHandler: TrackRequestHandler) {
 
     @Bean
-    fun allTracks(): RouterFunction<ServerResponse> {
-        return route(GET("$URI/subscribe"), trackRequestHandler::subscribe)
+    fun subscribe(): RouterFunction<ServerResponse> {
+        return route(GET(URI), trackRequestHandler::subscribe)
     }
 
     @Bean
