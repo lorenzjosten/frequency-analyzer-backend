@@ -8,7 +8,7 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 
 @Configuration
-class UploadErrorFilter {
+class UploadErrorHandler {
 
     @Bean
     fun fileUploadNotFound() = WebFilter { exchange: ServerWebExchange, chain: WebFilterChain ->
