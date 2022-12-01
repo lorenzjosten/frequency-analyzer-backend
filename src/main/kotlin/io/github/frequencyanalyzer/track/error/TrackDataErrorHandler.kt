@@ -20,10 +20,10 @@ class TrackDataErrorHandler {
     }
 
     @Bean
-    fun trackDataNotProcessable() = WebFilter { exchange: ServerWebExchange, chain: WebFilterChain ->
+    fun trackDataNotPersisted() = WebFilter { exchange: ServerWebExchange, chain: WebFilterChain ->
         chain.filter(exchange)
-                .onErrorResume(TrackDataProcessingException::class.java) {
-                    exchange.response.statusCode = HttpStatus.NOT_FOUND
+                .onErrorResume(TrackDataPersistenceException::class.java) {
+                    exchange.response.statusCode = HttpStatus.BAD_REQUEST
                     exchange.response.setComplete()
                 }
     }
