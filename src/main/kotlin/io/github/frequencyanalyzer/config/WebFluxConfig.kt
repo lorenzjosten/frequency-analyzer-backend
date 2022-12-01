@@ -20,9 +20,5 @@ class WebFluxConfig : WebFluxConfigurer {
                 .addMapping("/upload")
                 .allowedOrigins("*")
                 .allowedMethods("*")
-        registry
-                .addMapping("/test")
-                .allowedOrigins("*")
-                .allowedMethods("*")
     }
 }
