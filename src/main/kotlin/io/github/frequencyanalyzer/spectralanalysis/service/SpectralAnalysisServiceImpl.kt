@@ -34,7 +34,7 @@ class SpectralAnalysisServiceImpl(
      * Calculates a timed series of power spectra for a given track id.
      * Track data is decoded into frames, then grouped by a windowing function.
      * Power spectra of each window are calculated frame by frame.
-     * The spectra are accumulated and normalized before being returned.
+     * The spectra of each window are accumulated and normalized before being returned.
      *
      * @param trackId: ID of the track which
      * @return A timed series of power spectra

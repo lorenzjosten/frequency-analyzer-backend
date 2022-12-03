@@ -3,6 +3,14 @@ package io.github.frequencyanalyzer.decoder.model
 import io.github.frequencyanalyzer.decoder.extension.adjustedBuffer
 import javazoom.jl.decoder.SampleBuffer
 
+/**
+ * Wraps the properties of interest of a decoded mp3-frame
+ * @author Lorenz Josten
+ * @param sampleFrequency Sample frequency of the audio
+ * @param bufferSize Actual written bytes of the mp3-frame
+ * @param buffer Decoded mp3-frame data
+ * @param durationMs Duration in millis of the mp3-frame
+ */
 data class DecodedFrame(
     val sampleFrequency: Int,
     val bufferSize: Int,
